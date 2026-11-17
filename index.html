@@ -1063,21 +1063,38 @@
   if (matchMedia('(hover: none)').matches && !calm) {
     let litEl = null, queued = false;
     const items = [...document.querySelectorAll('.kit li, .steps li')];
+    const groups = [...new Set(items.map((it) => it.parentElement))];
+    // Side-by-side items would otherwise split one row's height between them (about 80-100px of
+    // scrolling each on a phone), so the highlight jumped from left to right almost at once.
+    // Each such item is guaranteed this much scrolling instead. The extra distance is taken
+    // from the empty space above and below the group. Raise it for a slower hand-off.
+    const MIN_SCROLL_EACH = 150;
     const update = () => {
       queued = false;
-      // Find the row of items that the middle line of the screen is passing through. Items that
-      // sit side by side share that row, so the line's progress down the row picks which one:
-      // left first, then the next to the right, then on to the row below (reading order).
-      const midY = innerHeight / 2;
-      let el = null;
-      const hit = items.find((it) => { const r = it.getBoundingClientRect(); return r.top <= midY && midY < r.bottom && r.height > 0; });
-      if (hit) {
-        const top = hit.getBoundingClientRect().top;
-        const row = items.filter((it) => it.parentElement === hit.parentElement && Math.abs(it.getBoundingClientRect().top - top) < 3)
-          .sort((p, q) => p.getBoundingClientRect().left - q.getBoundingClientRect().left);
-        const r = hit.getBoundingClientRect();
-        el = row[Math.min(row.length - 1, Math.floor(((midY - r.top) / r.height) * row.length))];
+      const midY = innerHeight / 2;                         // the middle line of the screen
+      let el = null, best = null, bestDist = Infinity;
+      for (const g of groups) {
+        const its = items.filter((it) => it.parentElement === g).map((it) => ({ it, r: it.getBoundingClientRect() })).filter((x) => x.r.height > 0);
+        if (!its.length) continue;
+        const sideBySide = its.some((a, k) => k > 0 && Math.abs(a.r.top - its[k - 1].r.top) < 3);
+        if (!sideBySide) {
+          // One per row: the card the middle line is inside. This always wins over a stretched group.
+          const h = its.find((x) => x.r.top <= midY && midY < x.r.bottom);
+          if (h) { el = h.it; break; }
+          continue;
+        }
+        // Rows of two or more: walk the items in reading order (left to right, then down) across
+        // a zone that is the group's own height, stretched if needed so each item gets its share.
+        const order = its.slice().sort((a, b) => (Math.abs(a.r.top - b.r.top) < 3 ? a.r.left - b.r.left : a.r.top - b.r.top));
+        const top = order[0].r.top, bottom = Math.max(...its.map((x) => x.r.bottom)), n = order.length;
+        const extra = Math.max(0, (n * MIN_SCROLL_EACH - (bottom - top)) / 2);
+        const start = top - extra, len = (bottom - top) + 2 * extra;
+        if (midY >= start && midY < start + len) {
+          const dist = Math.abs(midY - (top + bottom) / 2);
+          if (dist < bestDist) { bestDist = dist; best = order[Math.min(n - 1, Math.floor(((midY - start) / len) * n))].it; }
+        }
       }
+      if (!el) el = best;
       if (el === litEl) return;
       if (litEl) litEl.classList.remove('lit');
       litEl = el;
