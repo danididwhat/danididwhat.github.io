@@ -1,0 +1,173 @@
+{
+ "base": "https://img.danididwhat.com",
+ "categories": [
+  {
+   "name": "Products",
+   "slug": "products",
+   "photos": [
+    {
+     "key": "photos/products/20261108-123244-4dc098ca.jpg",
+     "w": 4500,
+     "h": 6000,
+     "alt": "Daniela and a white Samoyed dog beside a Christmas tree, holding a product box"
+    },
+    {
+     "key": "photos/products/20261108-123157-954c0b5e.jpg",
+     "w": 4500,
+     "h": 6000,
+     "alt": "Daniela holding a product box, sitting with a white Samoyed dog"
+    },
+    {
+     "key": "photos/products/20261108-115348-2a5f6e7a.jpg",
+     "w": 4500,
+     "h": 6000,
+     "alt": "Greeting cards displayed on a flocked Christmas tree with pink ornaments"
+    },
+    {
+     "key": "photos/products/20261108-115229-79660a71.jpg",
+     "w": 3375,
+     "h": 6000,
+     "alt": "Daniela holding up an open pink greeting card"
+    },
+    {
+     "key": "photos/products/20261108-115221-6614d316.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Wide view of a greeting-card display in a decorated living room"
+    },
+    {
+     "key": "photos/products/20261108-115158-c96bf261.jpg",
+     "w": 3375,
+     "h": 6000,
+     "alt": "Daniela at a table of greeting cards beside a pink Christmas tree"
+    },
+    {
+     "key": "photos/products/20261108-115130-c5888f34.jpg",
+     "w": 4500,
+     "h": 6000,
+     "alt": "Daniela writing in a greeting card, seen from above, on a pink festive set"
+    }
+   ]
+  },
+  {
+   "name": "Food",
+   "slug": "food",
+   "photos": [
+    {
+     "key": "photos/food/20261031-132312-993c2d2d.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Bowl of udon noodles with side dishes on a table"
+    },
+    {
+     "key": "photos/food/20261018-095420-b2064100.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Eggs benedict with a hash brown on a white plate"
+    },
+    {
+     "key": "photos/food/20260919-184030-e0560f0b.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Daniela holding out a tray of food at a theme park"
+    },
+    {
+     "key": "photos/food/20260906-125537-2723e8b4.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Hand holding an iced drink inside a car"
+    },
+    {
+     "key": "photos/food/20260830-174527-a75cdb30.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Seared beef with carrots on a scalloped white plate"
+    },
+    {
+     "key": "photos/food/20260830-173015-4d3a23fd.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Two crispy bites topped with shredded garnish on a white plate"
+    },
+    {
+     "key": "photos/food/20260523-213716-9fb3128d.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Sashimi platter with salmon and greens on a dark plate"
+    }
+   ]
+  },
+  {
+   "name": "Pets",
+   "slug": "pets",
+   "photos": [
+    {
+     "key": "photos/pets/oobmarh4-e480d445.jpg",
+     "w": 2066,
+     "h": 2755,
+     "alt": "Daniela holding a drink beside a white dog leaning out of a car"
+    },
+    {
+     "key": "photos/pets/img-5811-still-f8b7f42f.jpg",
+     "w": 2160,
+     "h": 3840,
+     "alt": "Daniela spoon-feeding a white Samoyed dog from a bowl"
+    },
+    {
+     "key": "photos/pets/img-0394-8a319e08.jpg",
+     "w": 2066,
+     "h": 2755,
+     "alt": "Daniela with iced drinks beside two white dogs in a car"
+    }
+   ]
+  },
+  {
+   "name": "Lifestyle",
+   "slug": "lifestyle",
+   "photos": [
+    {
+     "key": "photos/lifestyle/img-4917-c6191a4c.jpg",
+     "w": 4284,
+     "h": 5712,
+     "alt": "Daniela holding a balloon in front of a decorated shop window"
+    },
+    {
+     "key": "photos/lifestyle/20261018-134550-426-4a040558.jpg",
+     "w": 2160,
+     "h": 3840,
+     "alt": "Daniela on the deck of a cruise ship above the water"
+    },
+    {
+     "key": "photos/lifestyle/20260927-234002-d7815621.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Daniela posing under neon diner lights at night"
+    },
+    {
+     "key": "photos/lifestyle/20260518-185344-f60d0f72.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Daniela in front of a red trolley car"
+    },
+    {
+     "key": "photos/lifestyle/20260518-140649-830684f0.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Daniela meeting a costumed character at a theme park"
+    },
+    {
+     "key": "photos/lifestyle/20260517-123906-168d7197.jpg",
+     "w": 3000,
+     "h": 4000,
+     "alt": "Daniela walking in front of a castle at a theme park"
+    },
+    {
+     "key": "photos/lifestyle/20260419-193558-035-acbb7d77.jpg",
+     "w": 2160,
+     "h": 3840,
+     "alt": "Wide-angle shot of Daniela on a theme park ride"
+    }
+   ]
+  }
+ ]
+}

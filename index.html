@@ -6,7 +6,8 @@
 
   WHERE TO EDIT CONTENT (search for these markers):
     [FILMS]   the six video tiles — YouTube ID + caption each
-    [PHOTOS]  the photo grid (placeholders until photos are hosted on img.danididwhat.com)
+    [PHOTOS]  generated from photos.json. Never edit by hand: run tools/sync_photos.py in the
+              planning folder. The image files live in Cloudflare R2 (img.danididwhat.com).
     [BRANDS]  brands worked with (real paid work only)
     [ABOUT]   bio + how-I-work steps
     [FORM]    contact form; FORM_ENDPOINT and TURNSTILE_SITE_KEY in the script at the bottom.
@@ -31,6 +32,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://i.ytimg.com">
+<link rel="preconnect" href="https://img.danididwhat.com">
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -152,9 +154,15 @@
 
   /* ---------- photos ---------- */
   .grid{columns:3;column-gap:clamp(12px,1.6vw,24px);margin-top:clamp(40px,5vw,72px)}
-  .shot{break-inside:avoid;margin-bottom:clamp(12px,1.6vw,24px);border-radius:6px;overflow:hidden;position:relative;
-    background:linear-gradient(135deg,#F1D9D8,#EBCFC6);outline:1px solid rgba(194,154,75,.35);display:grid;place-items:center;color:var(--rose-deep)}
-  .shot span{font:italic 400 18px "Bodoni Moda",serif;opacity:.7}
+  .shot{display:block;width:100%;break-inside:avoid;margin-bottom:clamp(12px,1.6vw,24px);border-radius:6px;overflow:hidden;position:relative;
+    background:linear-gradient(135deg,#F1D9D8,#EBCFC6);outline:1px solid rgba(194,154,75,.35);cursor:zoom-in}
+  .shot img{width:100%;height:100%;object-fit:cover;transition:scale .6s cubic-bezier(.2,.8,.2,1)}
+  .shot:hover img,.shot:focus-visible img{scale:1.04}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(28px,4vw,48px)}
+  .chip{padding:10px 18px;border-radius:99px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:var(--rose-deep);
+    background:linear-gradient(var(--blush),var(--blush)) padding-box,var(--gold) border-box;border:1.5px solid transparent;transition:color .2s}
+  .chip[aria-pressed=true]{color:#fff;background:linear-gradient(135deg,#A85A78,#7A3355) padding-box,var(--gold) border-box}
+  .grid{margin-top:clamp(20px,3vw,36px)}
 
   /* ---------- brands ---------- */
   .brands{padding-block:clamp(40px,5vw,64px);border-block:1px solid rgba(194,154,75,.4);text-align:center;background:#FBF5F1}
@@ -196,6 +204,11 @@
   .lb{height:min(86vh,calc((100vw - 32px)*16/9));aspect-ratio:9/16;border-radius:30px;padding:6px;background:var(--gold);box-shadow:0 60px 120px -30px #000}
   .lb .fr{width:100%;height:100%;border-radius:25px;overflow:hidden;background:#000}
   .lb iframe{width:100%;height:100%;border:0;display:block}
+  .pl{max-width:calc(100vw - 24px);max-height:86vh;display:block;border-radius:10px;box-shadow:0 60px 120px -30px #000;outline:1px solid var(--gold-light);background:#2E0B1D}
+  .pcap{color:var(--petal);text-align:center;margin-top:12px;font-size:13px;letter-spacing:.06em;max-width:calc(100vw - 24px)}
+  .nav{position:fixed;top:50%;translate:0 -50%;width:46px;height:46px;border-radius:50%;border:1px solid var(--gold-light);color:#FFF0BE;font-size:22px;line-height:1;background:rgba(63,16,40,.6)}
+  .nav.prev{left:12px}.nav.next{right:12px}
+  #pv .x{position:fixed;top:14px;right:14px}
   .x{position:absolute;top:-52px;right:0;width:42px;height:42px;border-radius:50%;border:1px solid var(--gold-light);color:#FFF0BE;font-size:22px;line-height:1;background:rgba(63,16,40,.6)}
 
   @media (max-width:860px){
@@ -289,22 +302,18 @@
   </div>
 </section>
 
-<!-- [PHOTOS] HIDDEN (the `hidden` attribute) until real photos exist. Remove `hidden` here and on
-     the nav's Photos link to show it. PLACEHOLDERS. Replace each .shot with an <img> from img.danididwhat.com once the
+<!-- [PHOTOS] Built by the script at the bottom from photos.json. DO NOT edit photos here or in
+     photos.json: sort them into folders and run tools/sync_photos.py in the planning folder
+     (~/appDevelopment/DaniDidWhat_Site). The section and its nav link stay hidden until
+     photos.json loads with at least one photo. Old note: Replace each .shot with an <img> from img.danididwhat.com once the
      photos are hosted there (PLAN.md §4). Do not commit full-res photos to this repo. -->
 <section class="light" id="photos" hidden>
   <div class="head">
     <div><p class="k">Photography</p><h2 class="rv">Still <i class="foil-ink">life</i></h2></div>
     <p class="rv">Product and lifestyle stills, shot to sit beside the films.</p>
   </div>
-  <div class="grid">
-    <div class="shot rv" style="aspect-ratio:4/5"><span>Photo</span></div>
-    <div class="shot rv" style="aspect-ratio:1"><span>Photo</span></div>
-    <div class="shot rv" style="aspect-ratio:3/4"><span>Photo</span></div>
-    <div class="shot rv" style="aspect-ratio:1"><span>Photo</span></div>
-    <div class="shot rv" style="aspect-ratio:4/5"><span>Photo</span></div>
-    <div class="shot rv" style="aspect-ratio:5/4"><span>Photo</span></div>
-  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter photos by category"></div>
+  <div class="grid" id="grid"></div>
 </section>
 
 <!-- [BRANDS] HIDDEN (the `hidden` attribute) until there are real names. PLACEHOLDERS. Real paid work only. -->
@@ -356,6 +365,14 @@
   <span>© <span id="yr">2026</span> Dani Did What?</span>
   <span><a href="https://www.instagram.com/daniididwhat/" rel="noopener">Instagram @daniididwhat</a> · <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a></span>
 </footer>
+
+<dialog id="pv" aria-label="Photo viewer">
+  <img class="pl" id="pimg" alt="">
+  <p class="pcap" id="pcap"></p>
+  <button class="nav prev" id="pprev" aria-label="Previous photo">‹</button>
+  <button class="nav next" id="pnext" aria-label="Next photo">›</button>
+  <button class="x" id="pclose" aria-label="Close photo">×</button>
+</dialog>
 
 <dialog id="lb" aria-label="Film player">
   <div class="lb"><div class="fr" id="fr"></div></div>
@@ -430,6 +447,54 @@
       if (widget !== null && window.turnstile) turnstile.reset(widget);   // tokens are single-use
     }
   });
+  // ---- Photos. photos.json is generated by tools/sync_photos.py (planning folder). The image
+  // files live in Cloudflare R2; Cloudflare resizes them on request via /cdn-cgi/image/.
+  // Fixed widths only: every distinct width counts against the free monthly resize quota.
+  const grid = document.getElementById('grid'), chips = document.getElementById('chips');
+  const pv = document.getElementById('pv'), pimg = document.getElementById('pimg'), pcap = document.getElementById('pcap');
+  let shown = [], at = 0;
+  fetch('photos.json').then((r) => r.ok ? r.json() : Promise.reject(r.status)).then((d) => {
+    const cats = (d.categories || []).filter((c) => c.photos && c.photos.length);
+    if (!cats.length) return;
+    const src = (key, w, q) => d.base + '/cdn-cgi/image/width=' + w + ',format=auto,quality=' + (q || 82) + '/' + key;
+    const all = [];
+    cats.forEach((c) => c.photos.forEach((ph) => {
+      const b = document.createElement('button');
+      b.className = 'shot rv'; b.dataset.cat = c.slug; b.style.aspectRatio = ph.w + ' / ' + ph.h;
+      const im = document.createElement('img');
+      im.loading = 'lazy'; im.decoding = 'async'; im.width = ph.w; im.height = ph.h; im.alt = ph.alt;
+      im.sizes = '(max-width: 860px) 50vw, 33vw';
+      im.srcset = [480, 800, 1200].map((w) => src(ph.key, w) + ' ' + w + 'w').join(', ');
+      im.src = src(ph.key, 800);
+      b.append(im); grid.append(b);
+      const item = { el: b, full: src(ph.key, 2400, 85), alt: ph.alt, cat: c.slug };
+      all.push(item);
+      b.addEventListener('click', () => { shown = all.filter((x) => !x.el.hidden); show(shown.indexOf(item)); pv.showModal(); });
+    }));
+    const pick = (slug) => {
+      all.forEach((x) => { x.el.hidden = !!slug && x.cat !== slug; });
+      chips.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String((c.dataset.cat || '') === (slug || ''))));
+    };
+    [{ name: 'All', slug: '' }].concat(cats).forEach((c) => {
+      const b = document.createElement('button');
+      b.className = 'chip'; b.textContent = c.name; b.dataset.cat = c.slug;
+      b.addEventListener('click', () => pick(c.slug)); chips.append(b);
+    });
+    pick('');
+    document.getElementById('photos').hidden = false;
+    document.querySelectorAll('a[href="#photos"]').forEach((a) => { a.hidden = false; });
+  }).catch(() => {});                                  // no manifest: the section simply stays hidden
+  const show = (i) => {
+    at = (i + shown.length) % shown.length;
+    pimg.src = shown[at].full; pimg.alt = shown[at].alt; pcap.textContent = shown[at].alt;
+  };
+  document.getElementById('pprev').addEventListener('click', () => show(at - 1));
+  document.getElementById('pnext').addEventListener('click', () => show(at + 1));
+  document.getElementById('pclose').addEventListener('click', () => pv.close());
+  pv.addEventListener('click', (e) => { if (e.target === pv) pv.close(); });
+  pv.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') show(at - 1); if (e.key === 'ArrowRight') show(at + 1); });
+  pv.addEventListener('close', () => { pimg.removeAttribute('src'); });
+
   document.getElementById('yr').textContent = new Date().getFullYear();
 })();
 </script>
