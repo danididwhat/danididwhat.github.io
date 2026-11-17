@@ -706,7 +706,7 @@
     if (any) requestAnimationFrame(tick); else ticking = false;
   };
   function glide(row, track, speed) {
-    const st = { on: false, pos: 0, hold: 0, dragging: false, hover: false, moved: 0, lastX: 0, half: 0 };
+    const st = { on: false, pos: 0, hold: 0, dragging: false, hover: false, touching: false, startLeft: 0, downAt: 0, moved: 0, lastX: 0, half: 0 };
     const wrap = () => {                                    // keep the position inside the first copy
       st.half = track.scrollWidth / 2;
       if (!st.half) return;
@@ -714,11 +714,21 @@
       else if (row.scrollLeft <= 0) row.scrollLeft += st.half;
     };
     const touch = (ms) => { st.hold = Math.max(st.hold, performance.now() + ms); };
-    row.addEventListener('scroll', () => { wrap(); if (performance.now() < st.hold) touch(900); }, { passive: true });
-    row.addEventListener('wheel', () => touch(1200), { passive: true });
-    row.addEventListener('touchstart', () => touch(60000), { passive: true });
-    row.addEventListener('touchend', () => { st.hold = performance.now() + 1200; }, { passive: true });
-    row.addEventListener('touchcancel', () => { st.hold = performance.now() + 1200; }, { passive: true });
+    row.addEventListener('scroll', () => { wrap(); if (performance.now() < st.hold) touch(350); }, { passive: true });   // a swipe still coasting
+    row.addEventListener('wheel', () => touch(700), { passive: true });
+    // Touch: paused while a finger is down. On release, a finger that only passed over the row
+    // (scrolling the page) lets it glide again almost at once; a finger that swiped the row
+    // sideways waits for the swipe to settle first.
+    const release = () => {
+      if (!st.touching) return;
+      st.touching = false;
+      st.hold = performance.now() + (Math.abs(row.scrollLeft - st.startLeft) > 4 ? 450 : 120);
+    };
+    row.addEventListener('touchstart', () => { st.touching = true; st.startLeft = row.scrollLeft; st.downAt = performance.now(); }, { passive: true });
+    row.addEventListener('touchend', release, { passive: true });
+    row.addEventListener('touchcancel', release, { passive: true });
+    addEventListener('touchend', release, { passive: true });        // the finger may lift somewhere else
+    addEventListener('touchcancel', release, { passive: true });
     row.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') st.hover = true; });
     row.addEventListener('pointerleave', () => { st.hover = false; });
     row.addEventListener('pointerdown', (e) => {            // mouse drag (touch scrolls natively)
@@ -730,10 +740,11 @@
       const dx = e.clientX - st.lastX; st.lastX = e.clientX; st.moved += Math.abs(dx);
       row.scrollLeft -= dx; touch(1200);
     });
-    addEventListener('pointerup', () => { if (st.dragging) { st.dragging = false; row.classList.remove('drag'); touch(1200); } });
+    addEventListener('pointerup', () => { if (st.dragging) { st.dragging = false; row.classList.remove('drag'); touch(600); } });
     row.addEventListener('click', (e) => { if (st.moved > 6) { e.preventDefault(); e.stopPropagation(); st.moved = 0; } }, true);   // a drag is not a tap
     st.step = (dt) => {
-      if (calm || st.dragging || st.hover || performance.now() < st.hold) { st.pos = row.scrollLeft; return; }
+      if (st.touching && performance.now() - st.downAt > 10000) release();   // never stay stuck if a touchend is lost
+      if (calm || st.dragging || st.hover || st.touching || performance.now() < st.hold) { st.pos = row.scrollLeft; return; }
       if (!st.half) wrap();
       st.pos += speed * dt;
       if (st.half && st.pos >= st.half) st.pos -= st.half;
