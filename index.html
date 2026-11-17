@@ -163,6 +163,18 @@
     background:linear-gradient(var(--blush),var(--blush)) padding-box,var(--gold) border-box;border:1.5px solid transparent;transition:color .2s}
   .chip[aria-pressed=true]{color:#fff;background:linear-gradient(135deg,#A85A78,#7A3355) padding-box,var(--gold) border-box}
   .grid{margin-top:clamp(20px,3vw,36px)}
+  .strip{margin:clamp(32px,4vw,56px) calc(-1*var(--pad)) 0;display:grid;gap:12px;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+  .srow{overflow:hidden}
+  .track{display:flex;width:max-content;animation:slide linear infinite}       /* photos are duplicated once, so -50% loops seamlessly */
+  .strip:hover .track,.strip:active .track,.strip:focus-within .track{animation-play-state:paused}
+  .sshot{flex:none;height:clamp(190px,24vw,300px);margin-right:12px;border-radius:6px;overflow:hidden;cursor:zoom-in;
+    background:linear-gradient(135deg,#F1D9D8,#EBCFC6);outline:1px solid rgba(194,154,75,.35);outline-offset:-1px}
+  .sshot img{height:100%;width:auto;max-width:none}
+  .more{display:flex;flex-direction:column;align-items:center;gap:4px;margin:30px auto 0;padding:10px 18px;color:var(--rose-deep)}
+  .more svg{animation:bob 1.8s ease-in-out infinite;transition:rotate .3s}
+  .more[aria-expanded=true] svg{rotate:180deg}
+  @keyframes bob{50%{translate:0 5px}}
 
   /* ---------- brands ---------- */
   .brands{padding-block:clamp(40px,5vw,64px);border-block:1px solid rgba(194,154,75,.4);text-align:center;background:#FBF5F1}
@@ -225,8 +237,11 @@
     .light .k,.kicker{color:#7A3355}
     .meta span{font-size:11px;font-weight:600}
     /* headlines: lower optical size + more weight so the thin strokes survive on a phone */
-    h1{font-weight:500;font-variation-settings:"opsz" 40}
-    h1 .what{font-weight:600}
+    /* On a real phone the display cut's hairlines drop out and the letters look broken. Use the
+       sturdy low-optical-size cut, bold, and size it to fill the width. */
+    h1{font-size:min(22vw,112px);font-weight:700;font-variation-settings:"opsz" 14;letter-spacing:-.025em;line-height:.9;margin:20px 0 30px}
+    h1 .what{font-weight:800}
+    .loop path{stroke-width:2.2}
     h2{font-weight:500;font-variation-settings:"opsz" 28}
     .steps b{font-size:24px}
     .mark{font-weight:600;font-variation-settings:"opsz" 10}
@@ -246,6 +261,7 @@
     *,*::before,*::after{animation:none!important;transition:none!important}
     html{scroll-behavior:auto}
     h1 .l{opacity:1;transform:none;filter:none}.loop path{stroke-dashoffset:0}.sp{opacity:.8}
+    .srow{overflow-x:auto}                              /* no auto-glide: swipe the rows instead */
   }
 </style>
 </head>
@@ -325,8 +341,17 @@
     <div><p class="k">Photography</p><h2 class="rv">Still <i class="foil-ink">life</i></h2></div>
     <p class="rv">Product and lifestyle stills, shot to sit beside the films.</p>
   </div>
-  <div class="chips" id="chips" role="group" aria-label="Filter photos by category"></div>
-  <div class="grid" id="grid"></div>
+  <!-- Two rows that glide right to left. Tap a photo to open it. -->
+  <div class="strip" id="strip"></div>
+  <button class="more k" id="more" aria-expanded="false" aria-controls="gallery">
+    <span id="morelabel">View more</span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg>
+  </button>
+  <!-- The full gallery, opened by "View more". -->
+  <div id="gallery" hidden>
+    <div class="chips" id="chips" role="group" aria-label="Filter photos by category"></div>
+    <div class="grid" id="grid"></div>
+  </div>
 </section>
 
 <!-- [BRANDS] HIDDEN (the `hidden` attribute) until there are real names. PLACEHOLDERS. Real paid work only. -->
@@ -480,7 +505,7 @@
       im.srcset = [480, 800, 1200].map((w) => src(ph.key, w) + ' ' + w + 'w').join(', ');
       im.src = src(ph.key, 800);
       b.append(im); grid.append(b);
-      const item = { el: b, full: src(ph.key, 2400, 85), alt: ph.alt, cat: c.slug };
+      const item = { el: b, full: src(ph.key, 2400, 85), thumb: src(ph.key, 480), w: ph.w, h: ph.h, alt: ph.alt, cat: c.slug };
       all.push(item);
       b.addEventListener('click', () => { shown = all.filter((x) => !x.el.hidden); show(shown.indexOf(item)); pv.showModal(); });
     }));
@@ -494,6 +519,36 @@
       b.addEventListener('click', () => pick(c.slug)); chips.append(b);
     });
     pick('');
+    // The gliding strip: two rows, alternate photos, each row's set repeated once for a seamless loop.
+    const strip = document.getElementById('strip'), stripImgs = [];
+    [0, 1].forEach((ri) => {
+      const row = all.filter((x, i) => i % 2 === ri);
+      const track = document.createElement('div');
+      track.className = 'track';
+      track.style.animationDuration = (row.length * 6 + ri * 9) + 's';      // rows drift at different speeds
+      [0, 1].forEach((copy) => row.forEach((x) => {
+        const b = document.createElement('button');
+        b.className = 'sshot';
+        if (copy) { b.tabIndex = -1; b.setAttribute('aria-hidden', 'true'); }
+        const im = document.createElement('img');
+        im.decoding = 'async'; im.width = x.w; im.height = x.h; im.alt = copy ? '' : x.alt; im.dataset.src = x.thumb;
+        b.append(im); track.append(b); stripImgs.push(im);
+        b.addEventListener('click', () => { shown = all; show(all.indexOf(x)); pv.showModal(); });
+      }));
+      const r = document.createElement('div'); r.className = 'srow'; r.append(track); strip.append(r);
+    });
+    // Load the strip's images only when the section is close, so they cost nothing at page load.
+    new IntersectionObserver((es, o) => {
+      if (es.some((e) => e.isIntersecting)) { stripImgs.forEach((im) => { im.src = im.dataset.src; }); o.disconnect(); }
+    }, { rootMargin: '700px' }).observe(strip);
+    const more = document.getElementById('more'), gallery = document.getElementById('gallery');
+    more.addEventListener('click', () => {
+      const open = gallery.hidden;
+      gallery.hidden = !open;
+      more.setAttribute('aria-expanded', String(open));
+      document.getElementById('morelabel').textContent = open ? 'Show less' : 'View more';
+      (open ? gallery : strip).scrollIntoView({ block: open ? 'start' : 'center' });
+    });
     document.getElementById('photos').hidden = false;
     document.querySelectorAll('a[href="#photos"]').forEach((a) => { a.hidden = false; });
   }).catch(() => {});                                  // no manifest: the section simply stays hidden
