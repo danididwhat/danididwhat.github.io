@@ -278,6 +278,9 @@
   .btn:hover::after,.btn:focus-visible::after{translate:130% 0}
   .btn:active{transform:translateY(0) scale(.97);transition-duration:.08s}
   .btn[disabled]{opacity:.7;cursor:progress}
+  /* the gold button shimmers: its metallic gradient drifts slowly from side to side */
+  .btn.gold{background-size:240% 100%;animation:sheen 4.5s ease-in-out infinite}
+  .btn.gold:hover{animation-duration:2.2s}
   .pill,.chip{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .3s,color .2s}
   .pill:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px rgba(194,154,75,.95)}
   .chip:hover{transform:translateY(-2px);box-shadow:0 10px 20px -14px rgba(122,51,85,.8)}
@@ -392,6 +395,9 @@
   /* gold sparkles thrown off by a click (made in JS) */
   .bs{position:fixed;z-index:60;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px}
   .bs svg{width:100%;height:100%;filter:drop-shadow(0 0 5px rgba(255,226,150,.9))}
+  /* the celebration after a successful enquiry: confetti, glitter and stars (made in JS) */
+  .cf{position:fixed;z-index:61;pointer-events:none;left:0;top:0;will-change:transform,opacity}
+  .cf svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 4px rgba(255,226,150,.8))}
 
   @media (max-width:860px){
     /* Light (300) type is too thin to read on a phone: use regular weight and darker greys. */
@@ -783,7 +789,8 @@
       if (r.status === 429) { status.textContent = 'Too many messages from this connection. Please email dani@danididwhat.com instead.'; return; }
       if (!r.ok) throw new Error('HTTP ' + r.status);
       form.reset(); status.classList.add('ok'); status.textContent = 'Sent. Thank you! I will be in touch within two business days.';
-      const br = btn.getBoundingClientRect(); burst(br.left + br.width / 2, br.top + br.height / 2);
+      const br = btn.getBoundingClientRect();
+      document.dispatchEvent(new CustomEvent('dani:sent', { detail: { x: br.left + br.width / 2, y: br.top + br.height / 2 } }));
     } catch (err) {
       status.textContent = 'That did not send. Please email dani@danididwhat.com instead.';
     } finally {
@@ -915,6 +922,37 @@
     }
   };
   document.addEventListener('click', (e) => { if (e.target.closest('.btn,.pill,.more,.chip,[data-yt]')) burst(e.clientX, e.clientY); });
+
+  // The celebration when an enquiry is really sent ('dani:sent' is fired only on success).
+  // Three kinds of piece in the site's own palette: paper confetti, round glitter and gold stars.
+  // They launch up and outward from the button, then fall and fade. About two seconds, once.
+  const celebrate = (x, y) => {
+    if (calm) return;
+    const colors = ['#E8C978', '#FFF0BE', '#C79A45', '#F2A7C0', '#B9687F', '#FBE6EA', '#7A3355'];
+    for (let i = 0; i < 90; i++) {
+      const el = document.createElement('span'), kind = i % 5 === 0 ? 'star' : (i % 3 === 0 ? 'dot' : 'paper');
+      el.className = 'cf';
+      const size = kind === 'star' ? 12 + Math.random() * 14 : kind === 'dot' ? 4 + Math.random() * 5 : 7 + Math.random() * 7;
+      el.style.width = size + 'px';
+      el.style.height = (kind === 'paper' ? size * (.35 + Math.random() * .4) : size) + 'px';
+      if (kind === 'star') el.innerHTML = '<svg><use href="#star"/></svg>';
+      else { el.style.background = colors[i % colors.length]; el.style.borderRadius = kind === 'dot' ? '50%' : '1px'; }
+      document.body.append(el);
+      const ang = -Math.PI / 2 + (Math.random() - .5) * 2.3;            // mostly upward, fanned out
+      const power = 180 + Math.random() * 380;
+      const dx = Math.cos(ang) * power, up = Math.sin(ang) * power;
+      const fall = 260 + Math.random() * 320, spin = (Math.random() - .5) * 900, drift = (Math.random() - .5) * 120;
+      const at = (px, py, r, sc) => 'translate(' + (x + px) + 'px,' + (y + py) + 'px) rotate(' + r + 'deg) scale(' + sc + ')';
+      el.animate([
+        { transform: at(0, 0, 0, .2), opacity: 0 },
+        { transform: at(dx * .55, up * .8, spin * .3, 1), opacity: 1, offset: .22, easing: 'cubic-bezier(.2,.7,.3,1)' },
+        { transform: at(dx * .8, up, spin * .5, 1), opacity: 1, offset: .4, easing: 'cubic-bezier(.4,0,.8,.6)' },
+        { transform: at(dx + drift, up + fall, spin, .9), opacity: 0 },
+      ], { duration: 1700 + Math.random() * 900, delay: Math.random() * 140, fill: 'both' })
+        .finished.then(() => el.remove(), () => el.remove());
+    }
+  };
+  document.addEventListener('dani:sent', (e) => celebrate(e.detail.x, e.detail.y));
 
   // The floating "Work with me" button: on after the hero, off again at the contact form.
   const fab = document.getElementById('fab'), seen = { hero: true, contact: false };
