@@ -288,6 +288,7 @@
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
   .send{grid-column:1/-1;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
   .note{font-size:13px;color:var(--petal-dim)}
+  .note a{color:inherit;text-underline-offset:3px}
   #status{grid-column:1/-1;min-height:1.6em;color:#FFF0BE}
 
   footer{background:#2E0B1D;color:var(--petal-dim);padding:34px var(--pad);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
@@ -680,7 +681,7 @@
     <div class="f w"><label for="message">Tell me about the project</label><textarea id="message" name="message" required maxlength="3000" placeholder="Links to a brief or mood board are welcome."></textarea></div>
     <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
     <div class="f w" id="ts" aria-label="Human check"></div>
-    <div class="send"><button class="btn gold" type="submit">Send enquiry</button><span class="note">Your details are used only to reply to you.</span></div>
+    <div class="send"><button class="btn gold" type="submit">Send enquiry</button><span class="note">Your details are used only to reply to you. <a href="privacy.html">Privacy</a></span></div>
     <p id="status" role="status" aria-live="polite"></p>
   </form>
 </section>
@@ -690,7 +691,7 @@
 
 <footer>
   <span>© <span id="yr">2026</span> Dani Did What?</span>
-  <span><a href="https://www.instagram.com/daniididwhat/" target="_blank" rel="noopener">Instagram @daniididwhat</a> · <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a></span>
+  <span><a href="https://www.instagram.com/daniididwhat/" target="_blank" rel="noopener">Instagram @daniididwhat</a> · <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a> · <a href="privacy.html">Privacy</a></span>
 </footer>
 
 <dialog id="pv" aria-label="Photo viewer">
