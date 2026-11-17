@@ -127,7 +127,7 @@
   /* ---------- shared section bits ---------- */
   section{padding:clamp(72px,9vw,130px) var(--pad);position:relative}
   .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
-  h2{font:400 clamp(46px,7vw,112px)/.95 "Bodoni Moda",serif;letter-spacing:-.025em;margin-top:18px;position:relative;width:fit-content}
+  h2{font:500 clamp(46px,7vw,112px)/.95 "Bodoni Moda",serif;font-variation-settings:"opsz" 60;letter-spacing:-.025em;margin-top:18px;position:relative;width:fit-content}
   .head p{max-width:34ch}
   .velvet{color:var(--petal);background:radial-gradient(1000px 600px at 50% 0%,var(--wine-2) 0%,transparent 70%),var(--wine)}
   .velvet .k{color:var(--gold-light)}
@@ -151,6 +151,15 @@
   .meta{margin-top:16px;display:flex;gap:12px;align-items:baseline}
   .meta b{font:italic 600 20px/1 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;color:var(--gold-light)}
   .meta span{font-size:10px;letter-spacing:.26em;text-transform:uppercase}
+
+  /* the gliding films row (same scroller as the photo rows; see .srow below) */
+  .fstrip{margin:clamp(30px,4vw,56px) calc(-1*var(--pad)) 0;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+  .frow{padding:30px 0 44px}                           /* room for the tilt, lift and glow */
+  .frow .tile{flex:none;width:clamp(200px,20vw,290px);margin-right:clamp(14px,1.8vw,28px)}
+  .velvet .more{color:var(--gold-light);margin-top:6px}
+  .velvet .more:hover{color:#FFF0BE}
+  #fgrid:not([hidden]){animation:rise .7s cubic-bezier(.2,.8,.2,1)}
 
   /* ---------- photos ---------- */
   .grid{columns:3;column-gap:clamp(12px,1.6vw,24px);margin-top:clamp(40px,5vw,72px)}
@@ -199,6 +208,11 @@
   .steps span{color:#5F464E;font-weight:400}
 
   .about .bio + .bio{margin-top:16px}
+  .biocol .bio{color:#5F464E;max-width:62ch}
+  .biocol .bio:first-child{margin-top:clamp(8px,3.4vw,52px)}
+  .how{grid-column:1/-1;margin-top:clamp(40px,6vw,84px)}
+  .how .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0 clamp(16px,2.4vw,36px);border-top:0;margin-top:20px}
+  .how .steps li{grid-template-columns:1fr;gap:4px;border-top:1px solid rgba(194,154,75,.6);border-bottom:0;padding:18px 0 6px}
   .kit{grid-column:1/-1;margin-top:clamp(40px,6vw,84px)}
   .kit h3{font:500 clamp(28px,3.4vw,46px)/1.08 "Bodoni Moda",serif;font-variation-settings:"opsz" 24;letter-spacing:-.015em;margin:14px 0 28px;width:fit-content}
   .kit ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(194,154,75,.5);border:1px solid rgba(194,154,75,.5)}
@@ -398,7 +412,8 @@
     h1{font-size:min(22vw,112px);font-weight:700;font-variation-settings:"opsz" 14;letter-spacing:-.025em;line-height:.9;margin:20px 0 30px}
     h1 .what{font-weight:800}
     .loop path{stroke-width:2.2}
-    h2{font-weight:500;font-variation-settings:"opsz" 28}
+    /* At opsz 28 the crossbar of the "e" vanished on a phone and "Selected" read as "Sclcctcd". */
+    h2{font-weight:700;font-variation-settings:"opsz" 14;letter-spacing:-.02em}
     .steps b{font-size:24px}
     .kit ul{grid-template-columns:1fr}
     .kit ul.gear{grid-template-columns:1fr 1fr;gap:22px 18px}
@@ -413,9 +428,9 @@
     .hero{grid-template-columns:1fr;min-height:auto;padding-top:16px}
     .stage{height:560px}
     .loop{width:82%}
-    .reel{grid-template-columns:repeat(6,58vw);overflow-x:auto;padding:10px var(--pad) 70px;margin-inline:calc(-1*var(--pad));scroll-snap-type:x mandatory;scrollbar-width:none}
-    .reel::-webkit-scrollbar{display:none}
-    .tile{scroll-snap-align:center}
+    .reel{grid-template-columns:1fr 1fr;gap:20px 14px}
+    .frow .tile{width:58vw}
+    .how .steps{grid-template-columns:1fr}
     .grid{columns:2}
     .about,.contact{grid-template-columns:1fr}
     form{grid-template-columns:1fr}
@@ -489,14 +504,21 @@
       <span class="sp" style="--s:26px;right:-34px;top:-6px;--dl:.6s"><svg><use href="#star"/></svg></span></h2></div>
     <p class="rv">A curated video list across pet, food, fitness and lifestyle. Tap any one to watch it with sound.</p>
   </div>
-  <div class="reel">
-    <button class="tile rv" data-yt="5blILGER-h8"><div class="tph drift"><img loading="lazy" src="https://i.ytimg.com/vi/5blILGER-h8/oar2.jpg" width="720" height="1280" alt="Dog eating from a bowl beside a bag of dog food"><span class="play"></span></div><div class="meta"><b>01</b><span>Pet · Dog food</span></div></button>
-    <button class="tile rv" data-yt="lT2ZTKTq_gY"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/lT2ZTKTq_gY/oar2.jpg" width="720" height="1280" alt="Tennis player serving, seen from above"><span class="play"></span></div><div class="meta"><b>02</b><span>Fitness · Demo</span></div></button>
-    <button class="tile rv" data-yt="EFH1DO80Ic8"><div class="tph drift"><img loading="lazy" src="https://i.ytimg.com/vi/EFH1DO80Ic8/oar2.jpg" width="720" height="1280" alt="Hands unboxing a necklace and bracelet"><span class="play"></span></div><div class="meta"><b>03</b><span>Unboxing</span></div></button>
-    <button class="tile rv" data-yt="ujikcRwi3j0"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/ujikcRwi3j0/oar1.jpg" width="720" height="1280" alt="Title card over a restaurant kitchen: Bánh Mì Boy, Bib Gourmand"><span class="play"></span></div><div class="meta"><b>04</b><span>Food · Restaurant</span></div></button>
-    <button class="tile rv" data-yt="ufPxbrsXz4U"><div class="tph drift"><img loading="lazy" src="https://i.ytimg.com/vi/ufPxbrsXz4U/oar3.jpg" width="720" height="1280" alt="Daniela holding up a mug outside a shop"><span class="play"></span></div><div class="meta"><b>05</b><span>Shop with me</span></div></button>
-    <button class="tile rv" data-yt="tUFTrQrOmCc"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/tUFTrQrOmCc/oar2.jpg" width="720" height="1280" alt="Daniela grooming a white dog"><span class="play"></span></div><div class="meta"><b>06</b><span>Pet · Grooming</span></div></button>
-  </div>
+  <!-- One row that glides right to left and can be swiped or dragged. The script repeats these
+       tiles once for a seamless loop, and copies them into the "View all" grid below. -->
+  <div class="fstrip"><div class="srow frow"><div class="track" id="ftrack">
+    <button class="tile" data-yt="5blILGER-h8"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/5blILGER-h8/oar2.jpg" width="720" height="1280" alt="Dog eating from a bowl beside a bag of dog food"><span class="play"></span></div><div class="meta"><b>01</b><span>Pet · Dog food</span></div></button>
+    <button class="tile" data-yt="lT2ZTKTq_gY"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/lT2ZTKTq_gY/oar2.jpg" width="720" height="1280" alt="Tennis player serving, seen from above"><span class="play"></span></div><div class="meta"><b>02</b><span>Fitness · Demo</span></div></button>
+    <button class="tile" data-yt="EFH1DO80Ic8"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/EFH1DO80Ic8/oar2.jpg" width="720" height="1280" alt="Hands unboxing a necklace and bracelet"><span class="play"></span></div><div class="meta"><b>03</b><span>Unboxing</span></div></button>
+    <button class="tile" data-yt="ujikcRwi3j0"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/ujikcRwi3j0/oar1.jpg" width="720" height="1280" alt="Title card over a restaurant kitchen: Bánh Mì Boy, Bib Gourmand"><span class="play"></span></div><div class="meta"><b>04</b><span>Food · Restaurant</span></div></button>
+    <button class="tile" data-yt="ufPxbrsXz4U"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/ufPxbrsXz4U/oar3.jpg" width="720" height="1280" alt="Daniela holding up a mug outside a shop"><span class="play"></span></div><div class="meta"><b>05</b><span>Shop with me</span></div></button>
+    <button class="tile" data-yt="tUFTrQrOmCc"><div class="tph"><img loading="lazy" src="https://i.ytimg.com/vi/tUFTrQrOmCc/oar2.jpg" width="720" height="1280" alt="Daniela grooming a white dog"><span class="play"></span></div><div class="meta"><b>06</b><span>Pet · Grooming</span></div></button>
+  </div></div></div>
+  <button class="more k" id="fmore" aria-expanded="false" aria-controls="fgrid">
+    <span id="fmorelabel">View all</span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg>
+  </button>
+  <div class="reel" id="fgrid" hidden></div>
 </section>
 
 <!-- [PHOTOS] Built by the script at the bottom from photos.json. DO NOT edit photos here or in
@@ -533,18 +555,16 @@
   <div>
     <p class="k">About</p>
     <h2 class="rv">Hi, I'm <i class="foil-ink">Dani</i></h2>
-    <p class="bio rv">I make <strong>short-form video and photos that look like they belong in your customer's feed</strong>. By day I work in engineering sales, so I'm used to learning a product properly and then explaining it in plain words. That goes for a skincare routine as much as a piece of tech.</p>
-    <p class="bio rv">Most of what I shoot, I shoot in my own life. That means real settings, real light and no stock-photo feel.</p>
   </div>
-  <ol class="steps">
-    <li class="rv"><div><b>Brief</b><span>You tell me the product, the audience and the goal.</span></div></li>
-    <li class="rv"><div><b>Concept &amp; script</b><span>I send hooks and a shot plan for your sign-off.</span></div></li>
-    <li class="rv"><div><b>Shoot &amp; edit</b><span>Filmed, cut and captioned, in vertical and ready for ads.</span></div></li>
-    <li class="rv"><div><b>Delivery</b><span>Final files, with revisions included.</span></div></li>
-  </ol>
+  <div class="biocol">
+    <p class="bio rv">I make <strong>short-form video and photos that look like they belong in your customer's feed</strong>. Nothing staged or stiff: the kind of content people stop scrolling for because it looks like real life.</p>
+    <p class="bio rv">That's because it is my real life. Weekends are Disney and Universal, days out on the boat, and three Samoyeds who are convinced every shoot is about them. At home there's a kitchen I actually cook in and rooms that are ready for a camera. Your product gets filmed where it would really be used, by someone really using it.</p>
+    <p class="bio rv">By day I work in engineering sales, so I'm used to learning a product properly and explaining it in plain words. I read the brief, ask the right questions and deliver on time. You get the creative side and the professional side in one person.</p>
+  </div>
 
   <!-- [ABOUT / KIT] What a brand gets to shoot with. Written from the brand's side ("a set for
-       your product"), never as a list of possessions: no sizes, prices or model names. -->
+       your product"), never as a list of possessions: no sizes or prices. Phil asked for the car
+       and phone models to be named. -->
   <div class="kit">
     <p class="k">Where I shoot</p>
     <h3 class="rv">Sets, co-stars and <i class="foil-ink">props</i>, already here</h3>
@@ -552,21 +572,32 @@
       <li class="rv"><i class="k">Kitchen</i><b>Two islands, lots of light</b><span>Room to cook, plate and film at the same time. Food, drink, cookware and appliances.</span></li>
       <li class="rv"><i class="k">Home</i><b>A bathroom built for close-ups</b><span>Skincare, beauty and wellness routines, plus home and decor in rooms that feel lived in.</span></li>
       <li class="rv"><i class="k">Co-stars</i><b>Three Samoyeds</b><span>Fluffy, patient and happy to work for treats. Pet food, grooming, toys and anything that has to survive dog hair.</span></li>
-      <li class="rv"><i class="k">On the road</i><b>An EV and a Jeep</b><span>Car accessories, chargers, road-trip gear and anything that gets used on the go.</span></li>
+      <li class="rv"><i class="k">On the road</i><b>A Cadillac EV and a Jeep Wrangler</b><span>Car accessories, chargers, road-trip gear and anything that gets used on the go.</span></li>
       <li class="rv"><i class="k">Outdoors</i><b>A boat, and the water to go with it</b><span>Summer, swim, coolers, sun care and outdoor products where they actually get used.</span></li>
       <li class="rv"><i class="k">Days out</i><b>Disney and Universal passes</b><span>Theme-park content any week of the year: outfits, bags, snacks and travel must-haves.</span></li>
     </ul>
 
-    <!-- [ABOUT / GEAR] Camera kit. Named by what it lets her do for a brand. Model numbers are
-         left general on purpose: they date quickly and were not all confirmed. -->
+    <!-- [ABOUT / GEAR] Camera kit. Named by what it lets her do for a brand. The phone models are named at Phil's request;
+         the DJI, Insta360 and Canon models are left general because they were not confirmed. -->
     <p class="k gearlabel">What I shoot with</p>
     <ul class="gear">
-      <li class="rv"><b>iPhone &amp; Galaxy Z Fold</b><span>Native vertical video, filmed the way your customers film.</span></li>
+      <li class="rv"><b>iPhone 18 Pro &amp; Galaxy Z Fold8 Ultra</b><span>Native vertical video, filmed the way your customers film.</span></li>
       <li class="rv"><b>Canon 5D</b><span>Full-frame stills with real depth, for product and food.</span></li>
       <li class="rv"><b>DJI drone</b><span>Aerials for outdoor, travel and on-the-water shoots.</span></li>
       <li class="rv"><b>GoPro HERO13</b><span>Action and point-of-view, including in the splash zone.</span></li>
       <li class="rv"><b>Insta360</b><span>360° capture for immersive angles and reframing later.</span></li>
     </ul>
+  </div>
+
+  <!-- [ABOUT / HOW] The four steps of working together. -->
+  <div class="how">
+    <p class="k">How I work</p>
+    <ol class="steps">
+      <li class="rv"><div><b>Brief</b><span>You tell me the product, the audience and the goal.</span></div></li>
+      <li class="rv"><div><b>Concept &amp; script</b><span>I send hooks and a shot plan for your sign-off.</span></div></li>
+      <li class="rv"><div><b>Shoot &amp; edit</b><span>Filmed, cut and captioned, in vertical and ready for ads.</span></div></li>
+      <li class="rv"><div><b>Delivery</b><span>Final files, with revisions included.</span></div></li>
+    </ol>
   </div>
 </section>
 
@@ -632,7 +663,10 @@
   };
   const close = () => { fr.replaceChildren(); if (dlg.open) dlg.close(); };   // removing the iframe stops the sound
   // Where the browser supports view transitions, the tapped phone morphs into the player.
-  document.querySelectorAll('[data-yt]').forEach((el) => el.addEventListener('click', () => {
+  // Delegated, because the film tiles are copied into the gliding row and the "View all" grid.
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-yt]');
+    if (!el) return;
     const from = el.querySelector('.tph') || el, to = dlg.querySelector('.lb');
     if (document.startViewTransition && !calm) {
       dlg.dataset.vt = '1'; from.style.viewTransitionName = 'film';
@@ -640,10 +674,77 @@
       const done = () => { to.style.viewTransitionName = ''; };
       t.finished.then(done, done);
     } else { delete dlg.dataset.vt; open(el.dataset.yt); }
-  }));
+  });
   document.getElementById('lbx').addEventListener('click', close);
   dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });  // click on the backdrop
   dlg.addEventListener('close', () => fr.replaceChildren());                  // Esc key
+
+  // ---- Gliding rows (the films row and the two photo rows).
+  // Each row is a real horizontal scroller. `pos` is the scroll position we own; a finger, a mouse
+  // drag or a trackpad takes over, and the glide picks up from wherever they left it about a
+  // second after they let go. The row's content is in it twice, so the position wraps unseen.
+  const glideRows = []; let ticking = false, lastT = 0;
+  const tick = (t) => {
+    const dt = Math.min(.05, (t - lastT) / 1000 || 0); lastT = t;
+    let any = false;
+    glideRows.forEach((st) => { if (st.on) { any = true; st.step(dt); } });
+    if (any) requestAnimationFrame(tick); else ticking = false;
+  };
+  function glide(row, track, speed) {
+    const st = { on: false, pos: 0, hold: 0, dragging: false, hover: false, moved: 0, lastX: 0, half: 0 };
+    const wrap = () => {                                    // keep the position inside the first copy
+      st.half = track.scrollWidth / 2;
+      if (!st.half) return;
+      if (row.scrollLeft >= st.half) row.scrollLeft -= st.half;
+      else if (row.scrollLeft <= 0) row.scrollLeft += st.half;
+    };
+    const touch = (ms) => { st.hold = Math.max(st.hold, performance.now() + ms); };
+    row.addEventListener('scroll', () => { wrap(); if (performance.now() < st.hold) touch(900); }, { passive: true });
+    row.addEventListener('wheel', () => touch(1200), { passive: true });
+    row.addEventListener('touchstart', () => touch(60000), { passive: true });
+    row.addEventListener('touchend', () => { st.hold = performance.now() + 1200; }, { passive: true });
+    row.addEventListener('touchcancel', () => { st.hold = performance.now() + 1200; }, { passive: true });
+    row.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') st.hover = true; });
+    row.addEventListener('pointerleave', () => { st.hover = false; });
+    row.addEventListener('pointerdown', (e) => {            // mouse drag (touch scrolls natively)
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      st.dragging = true; st.moved = 0; st.lastX = e.clientX; row.classList.add('drag');
+    });
+    addEventListener('pointermove', (e) => {
+      if (!st.dragging) return;
+      const dx = e.clientX - st.lastX; st.lastX = e.clientX; st.moved += Math.abs(dx);
+      row.scrollLeft -= dx; touch(1200);
+    });
+    addEventListener('pointerup', () => { if (st.dragging) { st.dragging = false; row.classList.remove('drag'); touch(1200); } });
+    row.addEventListener('click', (e) => { if (st.moved > 6) { e.preventDefault(); e.stopPropagation(); st.moved = 0; } }, true);   // a drag is not a tap
+    st.step = (dt) => {
+      if (calm || st.dragging || st.hover || performance.now() < st.hold) { st.pos = row.scrollLeft; return; }
+      if (!st.half) wrap();
+      st.pos += speed * dt;
+      if (st.half && st.pos >= st.half) st.pos -= st.half;
+      row.scrollLeft = st.pos;
+    };
+    new IntersectionObserver((es) => {                      // glide only while the row is on screen
+      st.on = es[0].isIntersecting;
+      if (st.on && !ticking) { ticking = true; lastT = performance.now(); requestAnimationFrame(tick); }
+    }).observe(row);
+    glideRows.push(st);
+  }
+
+  // ---- Films: fill the "View all" grid, repeat the row once for the loop, start the glide.
+  const ftrack = document.getElementById('ftrack'), fgrid = document.getElementById('fgrid');
+  const filmTiles = [...ftrack.children];
+  filmTiles.forEach((t) => { const g = t.cloneNode(true); g.classList.add('rv'); fgrid.append(g); });
+  filmTiles.forEach((t) => { const d = t.cloneNode(true); d.tabIndex = -1; d.setAttribute('aria-hidden', 'true'); ftrack.append(d); });
+  glide(ftrack.parentElement, ftrack, 22);
+  const fmore = document.getElementById('fmore');
+  fmore.addEventListener('click', () => {
+    const open = fgrid.hidden;
+    fgrid.hidden = !open;
+    fmore.setAttribute('aria-expanded', String(open));
+    document.getElementById('fmorelabel').textContent = open ? 'Show less' : 'View all';
+    (open ? fgrid : ftrack).scrollIntoView({ block: open ? 'start' : 'center' });
+  });
 
   // ---- Contact form. FORM_ENDPOINT is the Cloudflare Worker (PLAN.md §5). Until it exists,
   // a failed send tells the visitor to email instead; nothing is silently dropped.
@@ -697,9 +798,15 @@
   const pv = document.getElementById('pv'), pimg = document.getElementById('pimg'), pcap = document.getElementById('pcap');
   let shown = [], at = 0;
   fetch('photos.json').then((r) => r.ok ? r.json() : Promise.reject(r.status)).then((d) => {
+    const src = (key, w, q) => d.base + '/cdn-cgi/image/width=' + w + ',format=auto,quality=' + (q || 82) + '/' + key;
+    // Custom film covers: a file named <YouTube ID>.jpg in the photo folder's _covers/ replaces
+    // YouTube's own frame for that film, everywhere the film appears.
+    Object.entries(d.covers || {}).forEach(([id, key]) => {
+      if (!/^[\w-]{11}$/.test(id)) return;
+      document.querySelectorAll('[data-yt="' + id + '"] img').forEach((im) => { im.src = src(key, 720); });
+    });
     const cats = (d.categories || []).filter((c) => c.photos && c.photos.length);
     if (!cats.length) return;
-    const src = (key, w, q) => d.base + '/cdn-cgi/image/width=' + w + ',format=auto,quality=' + (q || 82) + '/' + key;
     const all = [];
     cats.forEach((c) => c.photos.forEach((ph) => {
       const b = document.createElement('button');
@@ -724,45 +831,6 @@
       b.addEventListener('click', () => pick(c.slug)); chips.append(b);
     });
     pick('');
-    // One gliding row. `pos` is the scroll position we own; a hand on the row takes over, and the
-    // glide picks up from wherever they left it about a second after they let go.
-    const stripRows = [];
-    function glide(row, track, speed) {
-      const st = { row, pos: 0, hold: 0, dragging: false, moved: 0, lastX: 0, half: 0 };
-      const wrap = () => {                                  // keep the position inside the first copy
-        st.half = track.scrollWidth / 2;
-        if (!st.half) return;
-        if (row.scrollLeft >= st.half) row.scrollLeft -= st.half;
-        else if (row.scrollLeft <= 0) row.scrollLeft += st.half;
-      };
-      const touch = (ms) => { st.hold = Math.max(st.hold, performance.now() + ms); };
-      row.addEventListener('scroll', () => { wrap(); if (performance.now() < st.hold) touch(900); }, { passive: true });
-      row.addEventListener('wheel', () => touch(1200), { passive: true });
-      row.addEventListener('touchstart', () => touch(60000), { passive: true });
-      row.addEventListener('touchend', () => { st.hold = performance.now() + 1200; }, { passive: true });
-      row.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') st.hover = true; });
-      row.addEventListener('pointerleave', () => { st.hover = false; });
-      // Mouse drag (touch scrolls natively).
-      row.addEventListener('pointerdown', (e) => {
-        if (e.pointerType !== 'mouse' || e.button !== 0) return;
-        st.dragging = true; st.moved = 0; st.lastX = e.clientX; row.classList.add('drag');
-      });
-      addEventListener('pointermove', (e) => {
-        if (!st.dragging) return;
-        const dx = e.clientX - st.lastX; st.lastX = e.clientX; st.moved += Math.abs(dx);
-        row.scrollLeft -= dx; touch(1200);
-      });
-      addEventListener('pointerup', () => { if (st.dragging) { st.dragging = false; row.classList.remove('drag'); touch(1200); } });
-      row.addEventListener('click', (e) => { if (st.moved > 6) { e.preventDefault(); e.stopPropagation(); st.moved = 0; } }, true);   // a drag is not a tap
-      st.step = (dt) => {
-        if (calm || st.dragging || st.hover || performance.now() < st.hold) { st.pos = row.scrollLeft; return; }
-        if (!st.half) wrap();
-        st.pos += speed * dt;
-        if (st.half && st.pos >= st.half) st.pos -= st.half;
-        row.scrollLeft = st.pos;
-      };
-      stripRows.push(st);
-    }
     // The gliding strip: two rows, alternate photos, each row's set repeated once for a seamless loop.
     const strip = document.getElementById('strip'), stripImgs = [];
     [0, 1].forEach((ri) => {
@@ -785,19 +853,6 @@
     new IntersectionObserver((es, o) => {
       if (es.some((e) => e.isIntersecting)) { stripImgs.forEach((im) => { im.src = im.dataset.src; }); o.disconnect(); }
     }, { rootMargin: '700px' }).observe(strip);
-    // Drive the glide only while the strip is on screen.
-    let stripOn = false, lastT = 0;
-    const tick = (t) => {
-      if (!stripOn) return;
-      const dt = Math.min(.05, (t - lastT) / 1000 || 0); lastT = t;
-      stripRows.forEach((st) => st.step(dt));
-      requestAnimationFrame(tick);
-    };
-    new IntersectionObserver((es) => {
-      const on = es.some((e) => e.isIntersecting);
-      if (on && !stripOn) { stripOn = true; lastT = performance.now(); requestAnimationFrame(tick); }
-      stripOn = on;
-    }).observe(strip);
     const more = document.getElementById('more'), gallery = document.getElementById('gallery');
     more.addEventListener('click', () => {
       const open = gallery.hidden;
