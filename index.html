@@ -9,7 +9,8 @@
     [PHOTOS]  the photo grid (placeholders until photos are hosted on img.danididwhat.com)
     [BRANDS]  brands worked with (real paid work only)
     [ABOUT]   bio + how-I-work steps
-    [FORM]    contact form; FORM_ENDPOINT in the script at the bottom
+    [FORM]    contact form; FORM_ENDPOINT and TURNSTILE_SITE_KEY in the script at the bottom.
+              Backend: ~/appDevelopment/danididwhat-api/ (a Cloudflare Worker, separate repo)
 
   RULES: no video files and no full-res photos in this repo (see CLAUDE.md). Videos are YouTube
   embeds loaded only on tap; posters are YouTube's vertical "oar2" thumbnails.
@@ -318,7 +319,8 @@
   </ol>
 </section>
 
-<!-- [FORM] Posts JSON to FORM_ENDPOINT (script below). The Worker behind it is not built yet. -->
+<!-- [FORM] Posts JSON to FORM_ENDPOINT (script below). The Worker is deployed; it refuses sends
+     until TURNSTILE_SITE_KEY is filled in below and its secret is set on the Worker. -->
 <section class="velvet contact" id="contact">
   <div>
     <p class="k">Work with me</p>
@@ -334,6 +336,7 @@
       <select id="need" name="need"><option>UGC video</option><option>Photography</option><option>Video + photography</option><option>Something else</option></select></div>
     <div class="f w"><label for="message">Tell me about the project</label><textarea id="message" name="message" required maxlength="3000"></textarea></div>
     <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+    <div class="f w" id="ts" aria-label="Human check"></div>
     <div class="send"><button class="btn gold" type="submit">Send enquiry</button><span class="note">Your details are used only to reply to you.</span></div>
     <p id="status" role="status" aria-live="polite"></p>
   </form>
@@ -377,20 +380,45 @@
   // ---- Contact form. FORM_ENDPOINT is the Cloudflare Worker (PLAN.md §5). Until it exists,
   // a failed send tells the visitor to email instead; nothing is silently dropped.
   const FORM_ENDPOINT = 'https://api.danididwhat.com/inquiry';
+  // Cloudflare Turnstile (the invisible "are you human" check). The SITE key is public by design.
+  // The matching SECRET key lives only in the Worker (wrangler secret), never in this file.
+  // EMPTY = not set up yet: the Worker then refuses every send and the visitor is told to email.
+  const TURNSTILE_SITE_KEY = '';
   const form = document.getElementById('inquiry'), status = document.getElementById('status');
+  let widget = null;
+  const loadTurnstile = () => {                     // loaded only when the form is first used
+    if (!TURNSTILE_SITE_KEY || document.getElementById('ts-js')) return;
+    window.onTurnstileReady = () => {
+      widget = turnstile.render('#ts', { sitekey: TURNSTILE_SITE_KEY, theme: 'dark', appearance: 'interaction-only' });
+    };
+    const sc = document.createElement('script');
+    sc.id = 'ts-js'; sc.async = true;
+    sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileReady';
+    document.head.append(sc);
+  };
+  form.addEventListener('focusin', loadTurnstile, { once: true });
+  form.addEventListener('pointerdown', loadTurnstile, { once: true });
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form.checkValidity()) { status.textContent = 'Please add your name, a valid email and a few words about the project.'; return; }
     const btn = form.querySelector('button[type=submit]');
+    const token = (widget !== null && window.turnstile) ? turnstile.getResponse(widget) : '';
+    if (TURNSTILE_SITE_KEY && !token) { loadTurnstile(); status.textContent = 'One moment, checking you are human. Please press Send again in a few seconds.'; return; }
     btn.disabled = true; status.textContent = 'Sending…';
     try {
-      const r = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))) });
+      const data = Object.fromEntries(new FormData(form));
+      delete data['cf-turnstile-response'];
+      data.turnstile = token;
+      const r = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
+      if (r.status === 429) { status.textContent = 'Too many messages from this connection. Please email dani@danididwhat.com instead.'; return; }
       if (!r.ok) throw new Error('HTTP ' + r.status);
       form.reset(); status.textContent = 'Sent. Thank you! I will be in touch within two business days.';
     } catch (err) {
       status.textContent = 'That did not send. Please email dani@danididwhat.com instead.';
-    } finally { btn.disabled = false; }
+    } finally {
+      btn.disabled = false;
+      if (widget !== null && window.turnstile) turnstile.reset(widget);   // tokens are single-use
+    }
   });
   document.getElementById('yr').textContent = new Date().getFullYear();
 })();
