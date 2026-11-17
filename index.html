@@ -382,8 +382,9 @@
   const FORM_ENDPOINT = 'https://api.danididwhat.com/inquiry';
   // Cloudflare Turnstile (the invisible "are you human" check). The SITE key is public by design.
   // The matching SECRET key lives only in the Worker (wrangler secret), never in this file.
-  // EMPTY = not set up yet: the Worker then refuses every send and the visitor is told to email.
-  const TURNSTILE_SITE_KEY = '';
+  // If this is empty, the Worker refuses every send and the visitor is told to email.
+  // The widget only works on danididwhat.com, so it will not pass on the localhost preview.
+  const TURNSTILE_SITE_KEY = '0x4AAAAAAGETiiqM60JKyRk3';   // widget "danididwhat", hostname danididwhat.com
   const form = document.getElementById('inquiry'), status = document.getElementById('status');
   let widget = null;
   const loadTurnstile = () => {                     // loaded only when the form is first used
