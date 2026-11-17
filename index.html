@@ -278,6 +278,7 @@
   form{display:grid;grid-template-columns:1fr 1fr;gap:22px 24px}
   .f{display:flex;flex-direction:column;gap:6px}
   .f.w{grid-column:1/-1}
+  .f textarea::placeholder{color:rgba(255,243,245,.5);font-style:italic;opacity:1}
   .f label .opt{letter-spacing:.08em;text-transform:none;font-weight:400;opacity:.75}
   .f label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:var(--gold-light)}
   .f input,.f select,.f textarea{font:400 17px/1.4 Jost,sans-serif;color:#FFF3F5;background:transparent;border:0;border-bottom:1px solid rgba(227,199,124,.55);padding:10px 0;border-radius:0;width:100%}
@@ -676,7 +677,7 @@
     <div class="f"><label for="brand">Brand / company</label><input id="brand" name="brand" autocomplete="organization" maxlength="120"></div>
     <div class="f w"><label for="need">What you need</label>
       <select id="need" name="need"><option>UGC video</option><option>Photography</option><option>Video + photography</option><option>Something else</option></select></div>
-    <div class="f w"><label for="message">Tell me about the project</label><textarea id="message" name="message" required maxlength="3000"></textarea></div>
+    <div class="f w"><label for="message">Tell me about the project</label><textarea id="message" name="message" required maxlength="3000" placeholder="Links to a brief or mood board are welcome."></textarea></div>
     <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
     <div class="f w" id="ts" aria-label="Human check"></div>
     <div class="send"><button class="btn gold" type="submit">Send enquiry</button><span class="note">Your details are used only to reply to you.</span></div>
