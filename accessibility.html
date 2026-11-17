@@ -1,0 +1,113 @@
+<!doctype html>
+<!--
+  accessibility.html: the accessibility statement for danididwhat.com. Plain HTML, no scripts.
+  Every sentence must stay true of the live site. What backs each claim (checked 2026-11-17):
+    - axe-core 4.10: 0 violations on index.html, privacy.html and this page
+    - keyboard walk-through (film and photo viewers, Esc, focus return), 320px reflow, reduced motion
+    - "Known gaps" are real and deliberate: gold-foil heading words (~3:1), no pause button for the
+      gliding rows/marquee, film captions unconfirmed (TODO D12), Turnstile.
+  When a gap is closed, remove it here. When the site changes, re-run axe and update the date.
+  Never claim "fully compliant" or name a law; describe what was done.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility — Dani Did What?</title>
+<meta name="description" content="How danididwhat.com is built for everyone, the known gaps, and how to report a problem.">
+<meta name="theme-color" content="#F8EFEB">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23C29A4B' d='M12 0c.3 8.2 3.5 11.7 12 12-8.5.3-11.7 3.8-12 12-.3-8.2-3.5-11.7-12-12 8.5-.3 11.7-3.8 12-12z'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://danididwhat.com/accessibility.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Jost:wght@300;400;500&display=swap">
+<style>
+  :root{--blush:#F8EFEB;--blush-2:#F3DEDC;--rose-deep:#8C4460;--plum:#2B1420;--muted:#5E4650;--gold-solid:#C29A4B;--line:#E2CFC9}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--blush);color:var(--plum);font:400 17px/1.65 Jost,system-ui,sans-serif;padding:0 clamp(16px,5vw,48px)}
+  a{color:var(--rose-deep);text-underline-offset:3px}
+  a:hover{color:var(--plum)}
+  :focus-visible{outline:2px solid var(--gold-solid);outline-offset:4px;border-radius:4px}
+  .top{max-width:720px;margin:0 auto;padding:28px 0 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .brand{font:600 20px/1 "Bodoni Moda",serif;font-variation-settings:"opsz" 14;text-decoration:none;color:var(--plum)}
+  .brand i{color:#7A5A1E}
+  .back{font-size:14px;letter-spacing:.06em}
+  main{max-width:720px;margin:0 auto;padding:clamp(36px,7vw,72px) 0 72px}
+  h1{font:600 clamp(40px,8vw,72px)/1 "Bodoni Moda",serif;font-variation-settings:"opsz" 28;letter-spacing:-.02em}
+  .date{margin-top:14px;color:var(--muted);font-size:15px}
+  h2{font:600 clamp(23px,3.4vw,28px)/1.2 "Bodoni Moda",serif;font-variation-settings:"opsz" 14;margin:44px 0 12px}
+  p,ul{margin-top:12px}
+  ul{padding-left:1.2em}
+  li{margin-top:8px}
+  li::marker{color:var(--gold-solid)}
+  b{font-weight:500}
+  .short{margin-top:32px;padding:22px 24px;border:1px solid var(--line);border-left:3px solid var(--gold-solid);background:var(--blush-2);border-radius:4px}
+  .short h2{margin-top:0}
+  footer{max-width:720px;margin:0 auto;padding:24px 0 40px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/">dani did <i>what?</i></a>
+  <a class="back" href="/">← Back to the site</a>
+</header>
+
+<main>
+  <h1>Accessibility</h1>
+  <p class="date">Last updated 17 November 2026</p>
+
+  <section class="short" aria-labelledby="short">
+    <h2 id="short">The short version</h2>
+    <ul>
+      <li>This site is built to be usable by everyone, including people who use a screen reader, a
+        keyboard instead of a mouse, or zoom.</li>
+      <li>The goal is the WCAG 2.1 AA guidelines. A few known gaps are listed below.</li>
+      <li>If anything doesn't work for you, email
+        <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a> and it will be fixed, or you
+        will get the content another way.</li>
+    </ul>
+  </section>
+
+  <h2>What has been done</h2>
+  <ul>
+    <li><b>Screen readers:</b> every photo has a written description, every film button says which
+      film it plays, every form field has a label, and the page is divided into sections a screen
+      reader can jump between.</li>
+    <li><b>Keyboard only:</b> everything works with Tab, Enter, Escape and the arrow keys. The film
+      player and photo viewer open with Enter, close with Escape, and return you to where you
+      were. The moving rows of films and photos pause while you are on one of them.</li>
+    <li><b>Low vision:</b> text is sized and coloured for readability, zooming is never blocked, and
+      the page rearranges itself without sideways scrolling when zoomed in.</li>
+    <li><b>Motion:</b> if your device is set to reduce motion, the moving rows, sparkles and short
+      video clips stop.</li>
+    <li><b>Video:</b> the short clips that play inside the phone frames are silent decoration. The
+      full films play in YouTube's player, which has its own captions and keyboard controls.</li>
+  </ul>
+
+  <h2>How it was checked</h2>
+  <p>With an automated accessibility checker (axe), which found no problems on this site's pages,
+    and by hand: keyboard-only use, zoom, and reduced motion, in Chrome. It has not yet been tested
+    with every screen reader and browser combination.</p>
+
+  <h2>Known gaps</h2>
+  <ul>
+    <li>A few decorative gold words in the large headings are lower in contrast than the rest of
+      the text. The same words are also readable by screen readers.</li>
+    <li>The rows of films and photos move on their own. They pause when you hover over them, touch
+      them, or move to them with the keyboard, and stop entirely with reduce-motion turned on, but
+      there is no separate pause button yet.</li>
+    <li>Captions on the full films are being checked. If a film has no captions and you would like
+      to know what is said in it, email and you will get a written version.</li>
+    <li>The contact form uses Cloudflare's human check. It usually needs no action from you; if it
+      ever stops you, email <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a>
+      instead.</li>
+  </ul>
+
+  <h2>Tell us about a problem</h2>
+  <p>Email <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a> with the page and what
+    happened. You will get a reply, and the problem will be fixed where possible.</p>
+</main>
+
+<footer>© 2026 Dani Did What? · <a href="/">danididwhat.com</a> · <a href="privacy.html">Privacy</a> · <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a></footer>
+</body>
+</html>
