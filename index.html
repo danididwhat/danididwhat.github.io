@@ -9,7 +9,7 @@
     [PHOTOS]  generated from photos.json. Never edit by hand: run tools/sync_photos.py in the
               planning folder. The image files live in Cloudflare R2 (img.danididwhat.com).
     [BRANDS]  brands worked with (real paid work only)
-    [ABOUT]   bio + how-I-work steps
+    [ABOUT]   bio, how-I-work steps, and the "What I shoot with" grid
     [FORM]    contact form; FORM_ENDPOINT and TURNSTILE_SITE_KEY in the script at the bottom.
               Backend: ~/appDevelopment/danididwhat-api/ (a Cloudflare Worker, separate repo)
 
@@ -198,6 +198,16 @@
   .steps b{display:block;font:600 22px/1.2 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;margin-bottom:4px}
   .steps span{color:#5F464E;font-weight:400}
 
+  .about .bio + .bio{margin-top:16px}
+  .kit{grid-column:1/-1;margin-top:clamp(40px,6vw,84px)}
+  .kit h3{font:500 clamp(28px,3.4vw,46px)/1.08 "Bodoni Moda",serif;font-variation-settings:"opsz" 24;letter-spacing:-.015em;margin:14px 0 28px;width:fit-content}
+  .kit ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(194,154,75,.5);border:1px solid rgba(194,154,75,.5)}
+  .kit li{background:var(--blush);padding:28px 26px 30px;transition:background .35s}
+  .kit li > i{display:block;font-style:normal;color:var(--rose-deep);margin-bottom:12px}
+  .kit b{display:block;font:600 22px/1.2 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;margin-bottom:8px}
+  .kit span{color:#5F464E;font-weight:400}
+  @media (hover:hover){.kit li:hover{background:#FDF6F2}}
+
   /* ---------- contact ---------- */
   .contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,6vw,96px)}
   .contact .lede{color:var(--petal-dim);max-width:36ch;margin:26px 0 30px;font-size:clamp(17px,1.4vw,20px)}
@@ -370,6 +380,10 @@
     .loop path{stroke-width:2.2}
     h2{font-weight:500;font-variation-settings:"opsz" 28}
     .steps b{font-size:24px}
+    .kit ul{grid-template-columns:1fr}
+    .kit li{padding:24px 20px 26px}
+    .kit span{font-size:18px;line-height:1.5;color:#3F2A31}
+    .kit h3{font-weight:600;font-variation-settings:"opsz" 14}
     .mark{font-weight:600;font-variation-settings:"opsz" 10}
     .marquee div{font-weight:500;font-variation-settings:"opsz" 14}
     .links{display:none}
@@ -496,7 +510,8 @@
   <div>
     <p class="k">About</p>
     <h2 class="rv">Hi, I'm <i class="foil-ink">Dani</i></h2>
-    <p class="bio rv">I make <strong>short-form video and photography that looks like it belongs in your customer's feed</strong>, because it does. Pet, food, fitness and lifestyle are where I live. You send the product and the brief; I send back content that is on-brand, on time and ready to post.</p>
+    <p class="bio rv">I make <strong>short-form video and photos that look like they belong in your customer's feed</strong>. By day I work in engineering sales, so I'm used to learning a product properly and then explaining it in plain words. That goes for a skincare routine as much as a piece of tech.</p>
+    <p class="bio rv">Most of what I shoot, I shoot in my own life. That means real settings, real light and no stock-photo feel.</p>
   </div>
   <ol class="steps">
     <li class="rv"><div><b>Brief</b><span>You tell me the product, the audience and the goal.</span></div></li>
@@ -504,6 +519,21 @@
     <li class="rv"><div><b>Shoot &amp; edit</b><span>Filmed, cut and captioned, in vertical and ready for ads.</span></div></li>
     <li class="rv"><div><b>Delivery</b><span>Final files, with revisions included.</span></div></li>
   </ol>
+
+  <!-- [ABOUT / KIT] What a brand gets to shoot with. Written from the brand's side ("a set for
+       your product"), never as a list of possessions: no sizes, prices or model names. -->
+  <div class="kit">
+    <p class="k">What I shoot with</p>
+    <h3 class="rv">Sets, co-stars and <i class="foil-ink">props</i>, already here</h3>
+    <ul>
+      <li class="rv"><i class="k">Kitchen</i><b>Two islands, lots of light</b><span>Room to cook, plate and film at the same time. Food, drink, cookware and appliances.</span></li>
+      <li class="rv"><i class="k">Home</i><b>A bathroom built for close-ups</b><span>Skincare, beauty and wellness routines, plus home and decor in rooms that feel lived in.</span></li>
+      <li class="rv"><i class="k">Co-stars</i><b>Three Samoyeds</b><span>Fluffy, patient and happy to work for treats. Pet food, grooming, toys and anything that has to survive dog hair.</span></li>
+      <li class="rv"><i class="k">On the road</i><b>An EV and a Jeep</b><span>Car accessories, chargers, road-trip gear and anything that gets used on the go.</span></li>
+      <li class="rv"><i class="k">Outdoors</i><b>A boat, and the water to go with it</b><span>Summer, swim, coolers, sun care and outdoor products where they actually get used.</span></li>
+      <li class="rv"><i class="k">Days out</i><b>Disney and Universal passes</b><span>Theme-park content any week of the year: outfits, bags, snacks and travel must-haves.</span></li>
+    </ul>
+  </div>
 </section>
 
 <!-- [FORM] Posts JSON to FORM_ENDPOINT (script below). The Worker is deployed; it refuses sends
