@@ -93,7 +93,7 @@
   .loop path{fill:none;stroke:var(--gold-solid);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:1500;stroke-dashoffset:1500;animation:draw 1.6s 1.1s ease-out forwards;opacity:.85}
   @keyframes draw{to{stroke-dashoffset:0}}
   .sub{max-width:34ch;font-size:clamp(17px,1.45vw,20px);color:var(--muted)}
-  .sub em{font:italic 500 1.08em "Bodoni Moda",serif;color:var(--rose-deep)}
+  .sub em{font:italic 600 1.08em "Bodoni Moda",serif;font-variation-settings:"opsz" 8;color:var(--rose-deep)}
   .cta{display:flex;gap:18px;margin-top:34px;flex-wrap:wrap;align-items:center}
   .btn{display:inline-block;padding:16px 28px;border-radius:99px;font-weight:500;font-size:13px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
     color:#fff;background:linear-gradient(135deg,#A85A78,#7A3355);box-shadow:0 14px 34px -14px rgba(122,51,85,.75),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .25s,box-shadow .25s}
@@ -114,7 +114,7 @@
   .card{position:absolute;z-index:3;background:rgba(255,250,248,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:16px;padding:12px 16px;
     box-shadow:0 18px 40px -18px rgba(43,20,32,.45);outline:1px solid rgba(194,154,75,.45);pointer-events:none}
   .c1{left:0;bottom:15%;transform:rotate(-4deg);font-size:13px}
-  .c1 b{display:block;font:italic 500 18px "Bodoni Moda",serif;color:var(--rose-deep)}
+  .c1 b{display:block;font:italic 600 18px "Bodoni Moda",serif;font-variation-settings:"opsz" 8;color:var(--rose-deep)}
   .c2{right:2%;top:11%;transform:rotate(4deg);font:500 11px/1 Jost;letter-spacing:.22em;text-transform:uppercase;display:flex;gap:8px;align-items:center}
   .c2 i{width:8px;height:8px;border-radius:50%;background:var(--rose);animation:pulse 1.6s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(185,104,127,.5)}100%{box-shadow:0 0 0 9px rgba(185,104,127,0)}}
@@ -149,7 +149,7 @@
   .play::before{content:"";border-left:11px solid #FFF2C6;border-block:7px solid transparent;margin-left:3px}
   .tile:hover .play{background:rgba(194,154,75,.75);scale:1.12}
   .meta{margin-top:16px;display:flex;gap:12px;align-items:baseline}
-  .meta b{font:italic 400 20px/1 "Bodoni Moda",serif;color:var(--gold-light)}
+  .meta b{font:italic 600 20px/1 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;color:var(--gold-light)}
   .meta span{font-size:10px;letter-spacing:.26em;text-transform:uppercase}
 
   /* ---------- photos ---------- */
@@ -175,8 +175,10 @@
   .about .bio strong{color:var(--plum);font-weight:400}
   .steps{list-style:none;padding:0;counter-reset:s;border-top:1px solid rgba(194,154,75,.5)}
   .steps li{counter-increment:s;display:grid;grid-template-columns:64px 1fr;gap:8px;padding:22px 0;border-bottom:1px solid rgba(194,154,75,.5)}
-  .steps li::before{content:"0" counter(s);font:italic 400 26px/1.2 "Bodoni Moda",serif;background:var(--gold-ink);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .steps b{display:block;font:400 22px/1.2 "Bodoni Moda",serif;margin-bottom:4px}
+  .steps li::before{content:"0" counter(s);font:italic 600 26px/1.2 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;background:var(--gold-ink);-webkit-background-clip:text;background-clip:text;color:transparent}
+  /* Bodoni Moda's hairlines vanish at small sizes. A low optical size ("opsz") plus more weight
+     gives sturdier strokes; use it wherever the serif is set small. */
+  .steps b{display:block;font:600 22px/1.2 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;margin-bottom:4px}
   .steps span{color:#5F464E;font-weight:400}
 
   /* ---------- contact ---------- */
@@ -213,11 +215,22 @@
 
   @media (max-width:860px){
     /* Light (300) type is too thin to read on a phone: use regular weight and darker greys. */
-    body{font-weight:400}
-    .sub,.about .bio,.light .head p{color:#5F464E}
-    .steps span{font-size:17px}
-    .velvet .head p,.contact .lede,.note{color:#EBD0D8}
-    .meta span{font-size:11px;font-weight:500}
+    body{font-weight:400;font-size:17px}
+    .sub,.about .bio,.light .head p,.steps span{color:#3F2A31;font-size:18px;line-height:1.55}
+    .about .bio strong{font-weight:500}
+    .velvet,.velvet .head p,.contact .lede,.note{color:#F8E4EA}
+    .contact .lede,.velvet .head p{font-size:18px}
+    .note{font-size:14px}
+    .k{font-weight:600;letter-spacing:.26em}
+    .light .k,.kicker{color:#7A3355}
+    .meta span{font-size:11px;font-weight:600}
+    /* headlines: lower optical size + more weight so the thin strokes survive on a phone */
+    h1{font-weight:500;font-variation-settings:"opsz" 40}
+    h1 .what{font-weight:600}
+    h2{font-weight:500;font-variation-settings:"opsz" 28}
+    .steps b{font-size:24px}
+    .mark{font-weight:600;font-variation-settings:"opsz" 10}
+    .marquee div{font-weight:500;font-variation-settings:"opsz" 14}
     .links{display:none}
     .hero{grid-template-columns:1fr;min-height:auto;padding-top:16px}
     .stage{height:560px}
