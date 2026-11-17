@@ -9,7 +9,7 @@
     [PHOTOS]  generated from photos.json. Never edit by hand: run tools/sync_photos.py in the
               planning folder. The image files live in Cloudflare R2 (img.danididwhat.com).
     [BRANDS]  brands worked with (real paid work only)
-    [ABOUT]   bio, how-I-work steps, and the "What I shoot with" grid
+    [ABOUT]   bio, how-I-work steps, the "Where I shoot" grid and the "What I shoot with" gear row
     [FORM]    contact form; FORM_ENDPOINT and TURNSTILE_SITE_KEY in the script at the bottom.
               Backend: ~/appDevelopment/danididwhat-api/ (a Cloudflare Worker, separate repo)
 
@@ -207,6 +207,11 @@
   .kit b{display:block;font:600 22px/1.2 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;margin-bottom:8px}
   .kit span{color:#5F464E;font-weight:400}
   @media (hover:hover){.kit li:hover{background:#FDF6F2}}
+  .gearlabel{margin-top:clamp(36px,5vw,60px)}
+  .kit ul.gear{grid-template-columns:repeat(5,1fr);gap:clamp(16px,2.4vw,36px);background:none;border:0;margin-top:20px}
+  .kit ul.gear li{background:none;padding:18px 0 0;border-top:1px solid rgba(194,154,75,.6)}
+  .kit ul.gear b{font-size:19px}
+  .kit ul.gear span{font-size:15px}
 
   /* ---------- contact ---------- */
   .contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,6vw,96px)}
@@ -396,6 +401,9 @@
     h2{font-weight:500;font-variation-settings:"opsz" 28}
     .steps b{font-size:24px}
     .kit ul{grid-template-columns:1fr}
+    .kit ul.gear{grid-template-columns:1fr 1fr;gap:22px 18px}
+    .kit ul.gear b{font-size:20px}
+    .kit ul.gear span{font-size:16px}
     .kit li{padding:24px 20px 26px}
     .kit span{font-size:18px;line-height:1.5;color:#3F2A31}
     .kit h3{font-weight:600;font-variation-settings:"opsz" 14}
@@ -538,7 +546,7 @@
   <!-- [ABOUT / KIT] What a brand gets to shoot with. Written from the brand's side ("a set for
        your product"), never as a list of possessions: no sizes, prices or model names. -->
   <div class="kit">
-    <p class="k">What I shoot with</p>
+    <p class="k">Where I shoot</p>
     <h3 class="rv">Sets, co-stars and <i class="foil-ink">props</i>, already here</h3>
     <ul>
       <li class="rv"><i class="k">Kitchen</i><b>Two islands, lots of light</b><span>Room to cook, plate and film at the same time. Food, drink, cookware and appliances.</span></li>
@@ -547,6 +555,17 @@
       <li class="rv"><i class="k">On the road</i><b>An EV and a Jeep</b><span>Car accessories, chargers, road-trip gear and anything that gets used on the go.</span></li>
       <li class="rv"><i class="k">Outdoors</i><b>A boat, and the water to go with it</b><span>Summer, swim, coolers, sun care and outdoor products where they actually get used.</span></li>
       <li class="rv"><i class="k">Days out</i><b>Disney and Universal passes</b><span>Theme-park content any week of the year: outfits, bags, snacks and travel must-haves.</span></li>
+    </ul>
+
+    <!-- [ABOUT / GEAR] Camera kit. Named by what it lets her do for a brand. Model numbers are
+         left general on purpose: they date quickly and were not all confirmed. -->
+    <p class="k gearlabel">What I shoot with</p>
+    <ul class="gear">
+      <li class="rv"><b>iPhone &amp; Galaxy Z Fold</b><span>Native vertical video, filmed the way your customers film.</span></li>
+      <li class="rv"><b>Canon 5D</b><span>Full-frame stills with real depth, for product and food.</span></li>
+      <li class="rv"><b>DJI drone</b><span>Aerials for outdoor, travel and on-the-water shoots.</span></li>
+      <li class="rv"><b>GoPro HERO13</b><span>Action and point-of-view, including in the splash zone.</span></li>
+      <li class="rv"><b>Insta360</b><span>360° capture for immersive angles and reframing later.</span></li>
     </ul>
   </div>
 </section>
