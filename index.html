@@ -278,6 +278,7 @@
   form{display:grid;grid-template-columns:1fr 1fr;gap:22px 24px}
   .f{display:flex;flex-direction:column;gap:6px}
   .f.w{grid-column:1/-1}
+  .f label .opt{letter-spacing:.08em;text-transform:none;font-weight:400;opacity:.75}
   .f label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:var(--gold-light)}
   .f input,.f select,.f textarea{font:400 17px/1.4 Jost,sans-serif;color:#FFF3F5;background:transparent;border:0;border-bottom:1px solid rgba(227,199,124,.55);padding:10px 0;border-radius:0;width:100%}
   .f select option{color:#2B1420}
@@ -671,8 +672,9 @@
   <form id="inquiry" novalidate>
     <div class="f"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required maxlength="100"></div>
     <div class="f"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="200"></div>
+    <div class="f"><label for="phone">Phone <span class="opt">(optional)</span></label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="30"></div>
     <div class="f"><label for="brand">Brand / company</label><input id="brand" name="brand" autocomplete="organization" maxlength="120"></div>
-    <div class="f"><label for="need">What you need</label>
+    <div class="f w"><label for="need">What you need</label>
       <select id="need" name="need"><option>UGC video</option><option>Photography</option><option>Video + photography</option><option>Something else</option></select></div>
     <div class="f w"><label for="message">Tell me about the project</label><textarea id="message" name="message" required maxlength="3000"></textarea></div>
     <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
@@ -875,9 +877,13 @@
   };
   form.addEventListener('focusin', loadTurnstile, { once: true });
   form.addEventListener('pointerdown', loadTurnstile, { once: true });
+  // Same rule as the Worker (danididwhat-api src/index.js, PHONE): blank, or digits, + - ( ) . and
+  // plain spaces with 7 to 15 digits. Keep the two in step, or a typo shows as "did not send".
+  const PHONE_OK = (v) => { v = v.trim(); if (!v) return true; const d = v.replace(/\D/g, '').length; return /^[0-9+\-(). ]+$/.test(v) && d >= 7 && d <= 15; };
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form.checkValidity()) { status.textContent = 'Please add your name, a valid email and a few words about the project.'; return; }
+    if (!PHONE_OK(form.phone.value)) { status.textContent = 'Please check the phone number, or leave it blank.'; form.phone.focus(); return; }
     const btn = form.querySelector('button[type=submit]');
     const token = (widget !== null && window.turnstile) ? turnstile.getResponse(widget) : '';
     if (TURNSTILE_SITE_KEY && !token) { loadTurnstile(); status.textContent = 'One moment, checking you are human. Please press Send again in a few seconds.'; return; }
