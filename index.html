@@ -271,6 +271,21 @@
   .x:hover{transform:rotate(90deg)}
   .x:active,.nav:active{transform:scale(.9)}
 
+  /* Gold outlines on the ovals: one soft highlight travels slowly round the rim, like light on
+     metal. Kept slow and low-contrast on purpose. The nav button always moves; the filter chips
+     only move when hovered or selected, so a row of them is never all spinning at once.
+     Browsers without @property simply show the static gold ring. */
+  @property --a{syntax:"<angle>";inherits:false;initial-value:0deg}
+  @keyframes ringspin{to{--a:360deg}}
+  .pill{background:linear-gradient(var(--blush),var(--blush)) padding-box,
+      conic-gradient(from var(--a),#A8843A 0deg,#C79A45 190deg,#FFF3C4 262deg,#E8C978 290deg,#C79A45 325deg,#A8843A 360deg) border-box;
+    animation:ringspin 9s linear infinite}
+  .chip{background:linear-gradient(var(--blush),var(--blush)) padding-box,
+      conic-gradient(from var(--a),#A8843A 0deg,#C79A45 190deg,#FFF3C4 262deg,#E8C978 290deg,#C79A45 325deg,#A8843A 360deg) border-box}
+  .chip[aria-pressed=true]{background:linear-gradient(135deg,#A85A78,#7A3355) padding-box,
+      conic-gradient(from var(--a),#A8843A 0deg,#C79A45 190deg,#FFF3C4 262deg,#E8C978 290deg,#C79A45 325deg,#A8843A 360deg) border-box}
+  .chip:hover,.chip:focus-visible,.chip[aria-pressed=true]{animation:ringspin 9s linear infinite}
+
   /* text links: the underline draws in from the left */
   .links a,footer a{background:linear-gradient(var(--gold-solid),var(--gold-solid)) 0 100%/0 1px no-repeat;transition:background-size .4s cubic-bezier(.2,.8,.2,1),color .2s;padding-bottom:4px}
   footer a{border-bottom:0}
