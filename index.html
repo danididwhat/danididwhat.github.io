@@ -265,6 +265,18 @@
   .mail:hover{letter-spacing:.11em;border-bottom-color:currentColor}
   .mark{transition:opacity .2s}.mark:hover{opacity:.75}
 
+  /* Instagram link: an icon + handle under the email, in the hero and by the form */
+  .social{margin-top:18px}
+  .ig{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-size:15px;font-weight:400;letter-spacing:.06em;color:var(--rose-deep);transition:color .2s,gap .3s cubic-bezier(.2,.8,.2,1)}
+  .ig svg{flex:none;transition:rotate .5s cubic-bezier(.2,.8,.2,1),scale .3s}
+  .ig span{background:linear-gradient(var(--gold-solid),var(--gold-solid)) 0 100%/0 1px no-repeat;transition:background-size .4s cubic-bezier(.2,.8,.2,1);padding-bottom:3px}
+  .ig:hover,.ig:focus-visible{color:var(--plum);gap:13px}
+  .ig:hover span,.ig:focus-visible span{background-size:100% 1px}
+  .ig:hover svg{rotate:-8deg;scale:1.12}
+  .ig:active{scale:.97}
+  .velvet .ig{color:var(--gold-light)}
+  .velvet .ig:hover,.velvet .ig:focus-visible{color:#FFF0BE}
+
   /* hero phones: they are buttons, so they should feel like it */
   .phone{transition:scale .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s}
   .phone:hover,.phone:focus-visible{scale:1.035;box-shadow:0 60px 100px -35px rgba(43,20,32,.7),0 0 0 1px rgba(255,255,255,.35) inset,0 0 50px -8px rgba(232,201,120,.55)}
@@ -340,6 +352,8 @@
     .velvet,.velvet .head p,.contact .lede,.note{color:#F8E4EA}
     .contact .lede,.velvet .head p{font-size:18px}
     .note{font-size:14px}
+    .ig{font-size:17px;font-weight:500}
+    .light .ig,.top .ig{color:#7A3355}
     .k{font-weight:600;letter-spacing:.26em}
     .light .k,.kicker{color:#7A3355}
     .meta span{font-size:11px;font-weight:600}
@@ -402,6 +416,7 @@
       </h1>
       <p class="sub">Short-form video &amp; photography for brands that want to look <em>expensive</em> — hooks, unboxings, demos and lifestyle content made to stop the scroll.</p>
       <div class="cta"><a class="btn" href="#work">View the portfolio</a><a class="mail" href="mailto:dani@danididwhat.com">dani@danididwhat.com</a></div>
+      <p class="social"><a class="ig" href="https://www.instagram.com/daniididwhat/" target="_blank" rel="noopener" aria-label="Instagram: @daniididwhat (opens in a new tab)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r=".9" fill="currentColor" stroke="none"/></svg><span>@daniididwhat</span></a></p>
     </div>
     <div class="stage">
       <button class="phone p2" data-yt="ufPxbrsXz4U" aria-label="Play film: Shop with me"><div class="scr"><span class="isl"></span><img src="https://i.ytimg.com/vi/ufPxbrsXz4U/oar2.jpg" width="720" height="1280" alt=""></div></button>
@@ -491,6 +506,7 @@
     <h2 class="rv">Let's make <i class="foil">something</i></h2>
     <p class="lede">Tell me about the product and what you need. I reply within two business days.</p>
     <a class="mail" href="mailto:dani@danididwhat.com">dani@danididwhat.com</a>
+    <p class="social"><a class="ig" href="https://www.instagram.com/daniididwhat/" target="_blank" rel="noopener" aria-label="Instagram: @daniididwhat (opens in a new tab)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r=".9" fill="currentColor" stroke="none"/></svg><span>@daniididwhat</span></a></p>
   </div>
   <form id="inquiry" novalidate>
     <div class="f"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required maxlength="100"></div>
@@ -511,7 +527,7 @@
 
 <footer>
   <span>© <span id="yr">2026</span> Dani Did What?</span>
-  <span><a href="https://www.instagram.com/daniididwhat/" rel="noopener">Instagram @daniididwhat</a> · <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a></span>
+  <span><a href="https://www.instagram.com/daniididwhat/" target="_blank" rel="noopener">Instagram @daniididwhat</a> · <a href="mailto:dani@danididwhat.com">dani@danididwhat.com</a></span>
 </footer>
 
 <dialog id="pv" aria-label="Photo viewer">
