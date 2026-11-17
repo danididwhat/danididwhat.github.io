@@ -680,14 +680,15 @@
       <select id="need" name="need"><option>UGC video</option><option>Photography</option><option>Video + photography</option><option>Something else</option></select></div>
     <div class="f w"><label for="message">Tell me about the project</label><textarea id="message" name="message" required maxlength="3000" placeholder="Links to a brief or mood board are welcome."></textarea></div>
     <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
-    <div class="f w" id="ts" aria-label="Human check"></div>
+    <div class="f w" id="ts"></div>
     <div class="send"><button class="btn gold" type="submit">Send enquiry</button><span class="note">Your details are used only to reply to you. <a href="privacy.html">Privacy</a></span></div>
     <p id="status" role="status" aria-live="polite"></p>
   </form>
 </section>
+<!-- Inside <main> so every piece of content sits in a landmark (screen readers navigate by them).
+     It is position:fixed, so where it sits in the markup does not move it on screen. -->
+<a class="fab btn" id="fab" href="#contact" tabindex="-1" aria-hidden="true">Work with me</a>
 </main>
-
-<a class="fab btn" id="fab" href="#contact">Work with me</a>
 
 <footer>
   <span>© <span id="yr">2026</span> Dani Did What?</span>
@@ -704,7 +705,9 @@
 
 <dialog id="lb" aria-label="Film player">
   <div class="lb"><div class="fr" id="fr"></div></div>
-  <button class="x" id="lbx" aria-label="Close film">×</button>
+  <!-- autofocus: opening the player puts keyboard focus on Close, not inside YouTube's player,
+       which swallows the Escape key (a keyboard user could not close it with Esc). -->
+  <button class="x" id="lbx" aria-label="Close film" autofocus>×</button>
 </dialog>
 
 <script>
@@ -798,7 +801,8 @@
     row.addEventListener('click', (e) => { if (st.moved > 6) { e.preventDefault(); e.stopPropagation(); st.moved = 0; } }, true);   // a drag is not a tap
     st.step = (dt) => {
       if (st.touching && performance.now() - st.downAt > 10000) release();   // never stay stuck if a touchend is lost
-      if (calm || st.dragging || st.hover || st.touching || performance.now() < st.hold) { st.pos = row.scrollLeft; return; }
+      // Also paused while keyboard focus is inside the row, so a tile you tabbed to does not slide away.
+      if (calm || st.dragging || st.hover || st.touching || performance.now() < st.hold || row.contains(document.activeElement)) { st.pos = row.scrollLeft; return; }
       if (!st.half) wrap();
       st.pos += speed * dt;
       if (st.half && st.pos >= st.half) st.pos -= st.half;
@@ -1118,7 +1122,10 @@
   const fab = document.getElementById('fab'), seen = { hero: true, contact: false };
   const fabIO = new IntersectionObserver((es) => {
     es.forEach((e) => { seen[e.target.id === 'top' ? 'hero' : 'contact'] = e.isIntersecting; });
-    fab.classList.toggle('on', !seen.hero && !seen.contact);
+    const on = !seen.hero && !seen.contact;
+    fab.classList.toggle('on', on);
+    fab.tabIndex = on ? 0 : -1;                          // never tab to it while it is invisible
+    if (on) fab.removeAttribute('aria-hidden'); else fab.setAttribute('aria-hidden', 'true');
   }, { threshold: 0.05 });
   fabIO.observe(document.getElementById('top')); fabIO.observe(document.getElementById('contact'));
 
