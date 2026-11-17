@@ -264,8 +264,8 @@
     .kit li:hover::before{opacity:1}
     .kit li:hover > *{translate:10px 0}
   }
-  .kit li:is(.lit,.lit-t)::before{opacity:1}
-  .kit li:is(.lit,.lit-t) > *{translate:10px 0}
+  .kit li.lit::before{opacity:1}
+  .kit li.lit > *{translate:10px 0}
   .gearlabel{margin-top:clamp(36px,5vw,60px)}
   .kit ul.gear{grid-template-columns:repeat(5,1fr);gap:clamp(16px,2.4vw,36px);background:none;border:0;margin-top:20px}
   .kit ul.gear li{background:none;padding:18px 0 0;border-top:1px solid rgba(194,154,75,.6)}
@@ -407,12 +407,12 @@
   /* about: each step answers the pointer */
   .steps li{transition:background .35s,padding .35s cubic-bezier(.2,.8,.2,1)}
   @media (hover:hover){.steps li:hover{background:linear-gradient(90deg,rgba(232,201,120,.16),transparent 70%);padding-left:14px}}
-  /* Phones have no hover. The script adds .lit to the card passing the middle of the screen, and
-     .lit-t to a card under a finger; both get the same look as a hover. */
-  .steps li:is(.lit,.lit-t){background:linear-gradient(90deg,rgba(232,201,120,.16),transparent 70%);padding-left:14px}
-  .tile:is(.lit-t) .tph{rotate:0deg;scale:1.04;box-shadow:0 50px 70px -30px rgba(0,0,0,.9),0 0 46px -10px rgba(232,201,120,.6)}
-  .tile:is(.lit-t) .play{background:rgba(194,154,75,.75);scale:1.12}
-  .sshot.lit-t img,.shot.lit-t img{scale:1.07}
+  /* Phones have no hover. The script puts .lit on exactly ONE element at a time (see "Hover
+     effects for phones" in the script) and it gets the same look as a hover. */
+  .steps li.lit{background:linear-gradient(90deg,rgba(232,201,120,.16),transparent 70%);padding-left:14px}
+  .tile.lit .tph{rotate:0deg;scale:1.04;box-shadow:0 50px 70px -30px rgba(0,0,0,.9),0 0 46px -10px rgba(232,201,120,.6)}
+  .tile.lit .play{background:rgba(194,154,75,.75);scale:1.12}
+  .sshot.lit img,.shot.lit img{scale:1.07}
 
   /* a soft gold glow follows the pointer across the dark sections (position set from JS) */
   .velvet::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;
@@ -1059,29 +1059,46 @@
   document.addEventListener('dani:sent', (e) => celebrate(e.detail.x, e.detail.y));
 
   // ---- Hover effects for phones, which have no hover.
-  // (1) While scrolling: the card crossing a thin band at the middle of the screen gets .lit.
-  // (2) On touch: the card under a finger gets .lit-t, and keeps it briefly after the finger lifts.
-  // Neither is a tap; nothing is opened or sent.
-  if (matchMedia('(hover: none)').matches && !calm) {
-    const band = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('lit', e.isIntersecting)),
-      { rootMargin: '-44% 0px -44% 0px' });
-    document.querySelectorAll('.kit li, .steps li').forEach((c) => band.observe(c));
-  }
-  const TOUCHABLE = '.kit li, .steps li, .tile, .sshot, .shot';
-  let touched = null;
-  document.addEventListener('touchstart', (e) => {
-    const el = e.target.closest(TOUCHABLE);
-    if (!el) return;
-    if (touched && touched !== el) touched.classList.remove('lit-t');
-    touched = el; el.classList.add('lit-t');
-  }, { passive: true });
-  const untouch = () => {
-    const el = touched;
-    if (!el) return;
-    setTimeout(() => { if (touched === el) touched = null; el.classList.remove('lit-t'); }, 650);
+  // ONE card is lit at a time, by one piece of code, so two can never be lit together:
+  //   - a finger is down  -> the card under that finger (it follows the finger as it moves)
+  //   - no finger         -> the card at the middle of the screen (About cards and steps only)
+  // Nothing here is a tap; nothing is opened or sent.
+  const TOUCHABLE = '.kit li, .steps li, .tile, .sshot, .shot', SCROLL_LIT = '.kit li, .steps li';
+  let litEl = null, fingerDown = false, releaseTimer = 0;
+  const setLit = (el) => {
+    if (el === litEl) return;
+    if (litEl) litEl.classList.remove('lit');
+    litEl = el || null;
+    if (litEl) litEl.classList.add('lit');
   };
-  document.addEventListener('touchend', untouch, { passive: true });
-  document.addEventListener('touchcancel', untouch, { passive: true });
+  const noHover = matchMedia('(hover: none)').matches;
+  const litFromScroll = () => {
+    if (fingerDown || !noHover || calm) return;
+    // 30% across so it lands inside a column where items sit two-up, never in the gap between them
+    const hit = document.elementFromPoint(innerWidth * .3, innerHeight / 2);
+    setLit(hit ? hit.closest(SCROLL_LIT) : null);
+  };
+  const litFromFinger = (e) => {
+    const t = e.touches[0];
+    if (!t) return;
+    const hit = document.elementFromPoint(t.clientX, t.clientY);
+    setLit(hit ? hit.closest(TOUCHABLE) : null);
+  };
+  document.addEventListener('touchstart', (e) => { fingerDown = true; clearTimeout(releaseTimer); litFromFinger(e); }, { passive: true });
+  document.addEventListener('touchmove', litFromFinger, { passive: true });
+  const lifted = () => {
+    fingerDown = false;
+    clearTimeout(releaseTimer);
+    releaseTimer = setTimeout(() => { if (!fingerDown) { setLit(null); litFromScroll(); } }, 600);   // hold a beat, then hand back
+  };
+  document.addEventListener('touchend', lifted, { passive: true });
+  document.addEventListener('touchcancel', lifted, { passive: true });
+  let scrollQueued = false;
+  addEventListener('scroll', () => {
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(() => { scrollQueued = false; litFromScroll(); });
+  }, { passive: true });
 
   // The floating "Work with me" button: on after the hero, off again at the contact form.
   const fab = document.getElementById('fab'), seen = { hero: true, contact: false };
