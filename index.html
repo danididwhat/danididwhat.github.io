@@ -180,10 +180,15 @@
 
   /* A short silent loop of the film, laid over its cover once it starts playing (see the script).
      It fades in, so a cover that is a different moment from the loop reads as a dissolve. */
-  video.loop{position:absolute;object-fit:cover;opacity:0;transition:opacity .7s;pointer-events:none;background:transparent}
-  video.loop.on{opacity:1}
-  .tph video.loop{inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);border-radius:clamp(16px,2vw,29px)}
-  .scr video.loop{inset:0;width:100%;height:100%}
+  /* The video sits inside a clipping wrapper. Browsers can paint <video> on its own layer, which
+     ignores a border-radius or rotation set on the video itself and spills over the gold frame;
+     clipping the wrapper (overflow + clip-path, on its own layer) is what holds it in. */
+  .loopwrap{position:absolute;overflow:hidden;opacity:0;transition:opacity .7s;pointer-events:none;transform:translateZ(0);
+    border-radius:var(--lr);clip-path:inset(0 round var(--lr))}
+  .loopwrap.on{opacity:1}
+  .tph .loopwrap{inset:5px;--lr:clamp(16px,2vw,29px)}
+  .scr .loopwrap{inset:0;--lr:0px}
+  video.loop{width:100%;height:100%;object-fit:cover;display:block}
 
   /* ---------- photos ---------- */
   .grid{columns:3;column-gap:clamp(12px,1.6vw,24px);margin-top:clamp(40px,5vw,72px)}
@@ -819,8 +824,10 @@
       v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true'); v.tabIndex = -1;
       v.disablePictureInPicture = true;
       v.dataset.src = d.base + '/' + L.key;
-      v.addEventListener('playing', () => v.classList.add('on'), { once: true });
-      im.after(v);
+      const wrap = document.createElement('span');
+      wrap.className = 'loopwrap'; wrap.append(v);
+      v.addEventListener('playing', () => wrap.classList.add('on'), { once: true });
+      im.after(wrap);
       io.observe(el);
     });
   }).catch(() => {});                                    // no loops.json: the covers simply stay still
