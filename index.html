@@ -407,12 +407,9 @@
   /* about: each step answers the pointer */
   .steps li{transition:background .35s,padding .35s cubic-bezier(.2,.8,.2,1)}
   @media (hover:hover){.steps li:hover{background:linear-gradient(90deg,rgba(232,201,120,.16),transparent 70%);padding-left:14px}}
-  /* Phones have no hover. The script puts .lit on exactly ONE element at a time (see "Hover
-     effects for phones" in the script) and it gets the same look as a hover. */
+  /* Phones have no hover. The script puts .lit on the ONE card at the middle of the screen (see
+     "Hover effect for phones" in the script) and it gets the same look as a hover. */
   .steps li.lit{background:linear-gradient(90deg,rgba(232,201,120,.16),transparent 70%);padding-left:14px}
-  .tile.lit .tph{rotate:0deg;scale:1.04;box-shadow:0 50px 70px -30px rgba(0,0,0,.9),0 0 46px -10px rgba(232,201,120,.6)}
-  .tile.lit .play{background:rgba(194,154,75,.75);scale:1.12}
-  .sshot.lit img,.shot.lit img{scale:1.07}
 
   /* a soft gold glow follows the pointer across the dark sections (position set from JS) */
   .velvet::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;
@@ -1058,47 +1055,28 @@
   };
   document.addEventListener('dani:sent', (e) => celebrate(e.detail.x, e.detail.y));
 
-  // ---- Hover effects for phones, which have no hover.
-  // ONE card is lit at a time, by one piece of code, so two can never be lit together:
-  //   - a finger is down  -> the card under that finger (it follows the finger as it moves)
-  //   - no finger         -> the card at the middle of the screen (About cards and steps only)
-  // Nothing here is a tap; nothing is opened or sent.
-  const TOUCHABLE = '.kit li, .steps li, .tile, .sshot, .shot', SCROLL_LIT = '.kit li, .steps li';
-  let litEl = null, fingerDown = false, releaseTimer = 0;
-  const setLit = (el) => {
-    if (el === litEl) return;
-    if (litEl) litEl.classList.remove('lit');
-    litEl = el || null;
-    if (litEl) litEl.classList.add('lit');
-  };
-  const noHover = matchMedia('(hover: none)').matches;
-  const litFromScroll = () => {
-    if (fingerDown || !noHover || calm) return;
-    // 30% across so it lands inside a column where items sit two-up, never in the gap between them
-    const hit = document.elementFromPoint(innerWidth * .3, innerHeight / 2);
-    setLit(hit ? hit.closest(SCROLL_LIT) : null);
-  };
-  const litFromFinger = (e) => {
-    const t = e.touches[0];
-    if (!t) return;
-    const hit = document.elementFromPoint(t.clientX, t.clientY);
-    setLit(hit ? hit.closest(TOUCHABLE) : null);
-  };
-  document.addEventListener('touchstart', (e) => { fingerDown = true; clearTimeout(releaseTimer); litFromFinger(e); }, { passive: true });
-  document.addEventListener('touchmove', litFromFinger, { passive: true });
-  const lifted = () => {
-    fingerDown = false;
-    clearTimeout(releaseTimer);
-    releaseTimer = setTimeout(() => { if (!fingerDown) { setLit(null); litFromScroll(); } }, 600);   // hold a beat, then hand back
-  };
-  document.addEventListener('touchend', lifted, { passive: true });
-  document.addEventListener('touchcancel', lifted, { passive: true });
-  let scrollQueued = false;
-  addEventListener('scroll', () => {
-    if (scrollQueued) return;
-    scrollQueued = true;
-    requestAnimationFrame(() => { scrollQueued = false; litFromScroll(); });
-  }, { passive: true });
+  // ---- Hover effect for phones, which have no hover.
+  // The About card (or step) sitting at the middle of the screen is lit, and only that one. It
+  // depends on scroll position alone: touching, holding or dragging a card changes nothing.
+  // (An earlier version also lit the card under a finger. On a real phone that fought with the
+  // scroll highlight and felt janky, so it was removed. Don't add it back.)
+  if (matchMedia('(hover: none)').matches && !calm) {
+    let litEl = null, queued = false;
+    const update = () => {
+      queued = false;
+      // 30% across so it lands inside a column where items sit two-up, never in the gap between them
+      const hit = document.elementFromPoint(innerWidth * .3, innerHeight / 2);
+      const el = hit ? hit.closest('.kit li, .steps li') : null;
+      if (el === litEl) return;
+      if (litEl) litEl.classList.remove('lit');
+      litEl = el;
+      if (litEl) litEl.classList.add('lit');
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue, { passive: true });
+    queue();
+  }
 
   // The floating "Work with me" button: on after the hero, off again at the contact form.
   const fab = document.getElementById('fab'), seen = { hero: true, contact: false };
