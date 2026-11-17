@@ -5,7 +5,8 @@
   ~/appDevelopment/DaniDidWhat_Site/ (PLAN.md, CLAUDE.md). That folder is never published.
 
   WHERE TO EDIT CONTENT (search for these markers):
-    [FILMS]   the six video tiles — YouTube ID + caption each
+    [FILMS]   the six video tiles — YouTube ID + caption each. Their silent loops and custom
+              covers are generated: tools/make_loops.py + tools/loops.json in the planning folder.
     [PHOTOS]  generated from photos.json. Never edit by hand: run tools/sync_photos.py in the
               planning folder. The image files live in Cloudflare R2 (img.danididwhat.com).
     [BRANDS]  brands worked with (real paid work only)
@@ -176,6 +177,13 @@
   .velvet .more{color:var(--gold-light);margin-top:6px}
   .velvet .more:hover{color:#FFF0BE}
   #fgrid:not([hidden]){animation:rise .7s cubic-bezier(.2,.8,.2,1)}
+
+  /* A short silent loop of the film, laid over its cover once it starts playing (see the script).
+     It fades in, so a cover that is a different moment from the loop reads as a dissolve. */
+  video.loop{position:absolute;object-fit:cover;opacity:0;transition:opacity .7s;pointer-events:none;background:transparent}
+  video.loop.on{opacity:1}
+  .tph video.loop{inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);border-radius:clamp(16px,2vw,29px)}
+  .scr video.loop{inset:0;width:100%;height:100%}
 
   /* ---------- photos ---------- */
   .grid{columns:3;column-gap:clamp(12px,1.6vw,24px);margin-top:clamp(40px,5vw,72px)}
@@ -787,6 +795,35 @@
     document.getElementById('fmorelabel').textContent = open ? 'Show less' : 'View all';
     (open ? fgrid : ftrack).scrollIntoView({ block: open ? 'start' : 'center' });
   });
+
+  // ---- Silent film loops. loops.json is written by tools/make_loops.py (planning folder).
+  // Every phone that shows a film gets a muted <video> over its cover. A loop is only fetched
+  // and played while its phone is at least half on screen, and paused the moment it is not.
+  // Skipped entirely for reduced motion and for visitors who have asked their device to save data.
+  fetch('loops.json').then((r) => r.ok ? r.json() : Promise.reject(r.status)).then((d) => {
+    if (calm || (navigator.connection && navigator.connection.saveData)) return;
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      const v = e.target.querySelector('video.loop');
+      if (!v) return;
+      if (e.isIntersecting && e.intersectionRatio >= .5) {
+        if (!v.src) v.src = v.dataset.src;
+        v.play().catch(() => {});                       // a phone in low-power mode may refuse; the cover stays
+      } else { v.pause(); }
+    }), { threshold: [0, .5, 1] });
+    document.querySelectorAll('[data-yt]').forEach((el) => {
+      const L = (d.loops || {})[el.dataset.yt];
+      const im = el.querySelector('img');
+      if (!L || !im || !/^loops\/[\w-]+\.mp4$/.test(L.key)) return;
+      const v = document.createElement('video');
+      v.className = 'loop'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none';
+      v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true'); v.tabIndex = -1;
+      v.disablePictureInPicture = true;
+      v.dataset.src = d.base + '/' + L.key;
+      v.addEventListener('playing', () => v.classList.add('on'), { once: true });
+      im.after(v);
+      io.observe(el);
+    });
+  }).catch(() => {});                                    // no loops.json: the covers simply stay still
 
   // ---- Contact form. FORM_ENDPOINT is the Cloudflare Worker (PLAN.md §5). Until it exists,
   // a failed send tells the visitor to email instead; nothing is silently dropped.
