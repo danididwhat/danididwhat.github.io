@@ -220,7 +220,16 @@
   .kit li > i{display:block;font-style:normal;color:var(--rose-deep);margin-bottom:12px}
   .kit b{display:block;font:600 22px/1.2 "Bodoni Moda",serif;font-variation-settings:"opsz" 8;margin-bottom:8px}
   .kit span{color:#5F464E;font-weight:400}
-  @media (hover:hover){.kit li:hover{background:#FDF6F2}}
+  /* Same hover as the "How I work" steps: a gold wash comes in from the left and the text slides
+     a little to the right. The wash is a separate layer so it can fade (gradients cannot). */
+  .kit li{position:relative;isolation:isolate}
+  .kit li::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .4s;
+    background:linear-gradient(90deg,rgba(232,201,120,.26),transparent 75%)}
+  .kit li > *{transition:translate .4s cubic-bezier(.2,.8,.2,1)}
+  @media (hover:hover){
+    .kit li:hover::before{opacity:1}
+    .kit li:hover > *{translate:10px 0}
+  }
   .gearlabel{margin-top:clamp(36px,5vw,60px)}
   .kit ul.gear{grid-template-columns:repeat(5,1fr);gap:clamp(16px,2.4vw,36px);background:none;border:0;margin-top:20px}
   .kit ul.gear li{background:none;padding:18px 0 0;border-top:1px solid rgba(194,154,75,.6)}
