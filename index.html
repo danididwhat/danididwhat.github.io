@@ -43,6 +43,7 @@
   *{box-sizing:border-box;margin:0}
   html{scroll-behavior:smooth}
   body{color:var(--plum);font:300 16px/1.6 Jost,system-ui,sans-serif;overflow-x:hidden;background:var(--blush)}
+  [hidden]{display:none!important}   /* sections marked `hidden` in the HTML are not shown */
   img{max-width:100%;display:block}
   a{color:inherit}
   button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
@@ -226,7 +227,7 @@
 <div class="top">
   <nav>
     <a class="mark" href="#top">dani did <i class="foil-ink">what?</i></a>
-    <div class="links k"><a href="#work">Work</a><a href="#photos">Photos</a><a href="#about">About</a></div>
+    <div class="links k"><a href="#work">Work</a><a href="#photos" hidden>Photos</a><a href="#about">About</a></div>
     <a class="pill k" href="#contact">Work with me</a>
   </nav>
 
@@ -281,9 +282,10 @@
   </div>
 </section>
 
-<!-- [PHOTOS] PLACEHOLDERS. Replace each .shot with an <img> from img.danididwhat.com once the
+<!-- [PHOTOS] HIDDEN (the `hidden` attribute) until real photos exist. Remove `hidden` here and on
+     the nav's Photos link to show it. PLACEHOLDERS. Replace each .shot with an <img> from img.danididwhat.com once the
      photos are hosted there (PLAN.md §4). Do not commit full-res photos to this repo. -->
-<section class="light" id="photos">
+<section class="light" id="photos" hidden>
   <div class="head">
     <div><p class="k">Photography</p><h2 class="rv">Still <i class="foil-ink">life</i></h2></div>
     <p class="rv">Product and lifestyle stills, shot to sit beside the films.</p>
@@ -298,8 +300,8 @@
   </div>
 </section>
 
-<!-- [BRANDS] PLACEHOLDERS. Real paid work only. -->
-<section class="brands">
+<!-- [BRANDS] HIDDEN (the `hidden` attribute) until there are real names. PLACEHOLDERS. Real paid work only. -->
+<section class="brands" hidden>
   <p class="k" style="color:var(--rose-deep)">Brands I've created for</p>
   <ul><li>Brand name</li><li>Brand name</li><li>Brand name</li><li>Brand name</li><li>Brand name</li></ul>
 </section>
